@@ -105,6 +105,10 @@ class Game extends ChangeNotifier {
     //Host Listens to all player states, and sets all ready accordingly!
     //Host starts logging round additions!
     if (host) {
+      db.collection("games/$code/rounds").snapshots().listen((event) {
+        rounds = event.documents.map((e) => e.documentID).toList();
+        print("No. of elements in roundList is:" + rounds.length.toString());
+      });
       print("Listening to Plauyers!");
       db.collection("games/$code/players").snapshots().listen((event) {
         bool _allReady = true;
