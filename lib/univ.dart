@@ -22,3 +22,12 @@ String getGameCode() {
   }
   return result;
 }
+
+String getRoundCode() {
+  Random rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
+  String result = "";
+  for (var i = 0; i < 8; i++) {
+    result += chars[rnd.nextInt(chars.length)];
+  }
+  return result;
+}

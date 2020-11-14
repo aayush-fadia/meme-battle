@@ -15,7 +15,10 @@ class Lobby extends StatelessWidget {
         ),
         body: Column(children: [
           Text(
-              "This is your Lobby! Pull from the left to see players in the lobby!")
+              "This is your Lobby! Pull from the left to see players in the lobby!"),
+          FloatingActionButton(onPressed: () {
+            game.makeRoundCustom(context);
+          })
         ]),
         drawer: Drawer(
           child: Column(children: [
