@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meme_battle/synced_models/Game.dart';
-import 'package:provider/provider.dart';
 import 'package:nice_button/nice_button.dart';
+import 'package:provider/provider.dart';
 
 class SetNameView extends StatefulWidget {
   @override

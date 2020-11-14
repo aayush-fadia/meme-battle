@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:meme_battle/synced_models/Rounds.dart';
 import 'package:meme_battle/univ.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -53,8 +55,16 @@ class Game extends ChangeNotifier {
 
   bool start() {
     if (allReady) {
+      int roundIndex = Random().nextInt(rounds.length);
+      String round_ = rounds[roundIndex];
+      rounds.removeAt(roundIndex);
       state = GameState.PLAYING;
-      db.document("games/$code").setData({"state": state.toString()});
+      db
+          .document("games/$code")
+          .setData({"state": state.toString(), "round": round_});
+      db
+          .document("games/$code/rounds/$round_")
+          .setData({"state": RoundState.THINKING.toString()});
       notifyListeners();
       return true;
     }
@@ -158,7 +168,9 @@ class Game extends ChangeNotifier {
 
   void makeRoundCustom(BuildContext context) async {
     String roundCode = getRoundCode();
-    db.document("games/$code/rounds/$roundCode").setData({"uploader": myName});
+    db
+        .document("games/$code/rounds/$roundCode")
+        .setData({"uploader": myName, "state": RoundState.THINKING.toString()});
     File image = await pickImage();
     BuildContext dialogContext;
     Dialog d = Dialog(

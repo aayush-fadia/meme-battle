@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:meme_battle/synced_models/Game.dart';
 import 'package:meme_battle/synced_models/PlayerList.dart';
+import 'package:meme_battle/synced_models/Rounds.dart';
 import 'package:meme_battle/views/lobby.dart';
 import 'package:meme_battle/views/outside_screen.dart';
+import 'package:meme_battle/views/rounds_screen.dart';
 import 'package:meme_battle/views/set_name.dart';
 import 'package:provider/provider.dart';
 
@@ -18,9 +20,11 @@ class GameScreen extends StatelessWidget {
       return ChangeNotifierProvider(
           create: (context) => PlayerList(game.code), child: Lobby());
     } else if (game.state == GameState.PLAYING) {
-      return Scaffold(
-        body: Text("Game has started, not implemented yet!"),
-      );
+      return MultiProvider(providers: [
+        ChangeNotifierProvider(create: (context) => PlayerList(game.code)),
+        ChangeNotifierProvider(
+            create: (context) => RoundSync(game.code, game.host))
+      ], child: RoundsScreen());
     }
   }
 }
