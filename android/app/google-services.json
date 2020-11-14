@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "277996113678",
+    "firebase_url": "https://meme-battle-896ed.firebaseio.com",
+    "project_id": "meme-battle-896ed",
+    "storage_bucket": "meme-battle-896ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277996113678:android:849c343ec211a34d33115f",
+        "android_client_info": {
+          "package_name": "com.meraki.meme_battle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "277996113678-dompc56spu3tqbhqgu3r7i903vcejui2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP5SR1m9NCvYmMmhFzOWjCt26CCa67Ok4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "277996113678-dompc56spu3tqbhqgu3r7i903vcejui2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
