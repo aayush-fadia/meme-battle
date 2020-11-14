@@ -32,6 +32,7 @@ dependencies:
   image_picker:
   image_cropper:
   path_provider:
+  nice_button: ^0.1.7
 
 
 
