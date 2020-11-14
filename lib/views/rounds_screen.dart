@@ -18,7 +18,7 @@ class RoundsScreen extends StatelessWidget {
                 ? Image.network(round.imageUrl)
                 : Container(),
             FloatingActionButton(onPressed: () {
-              round.respond(context, game.myName);
+              round.respond(context, game.myName, round.imageUrl);
               game.ready();
             })
           ],

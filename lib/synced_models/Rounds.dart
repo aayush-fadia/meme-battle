@@ -4,9 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart';
+import 'package:http/http.dart' show get;
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../image_editor/image_editor.dart';
 
 enum RoundState { THINKING, VOTING, ENDING }
 
@@ -43,39 +46,27 @@ class RoundSync extends ChangeNotifier {
     host = host_;
   }
 
-  Future<File> pickImage() async {
-    var image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, maxWidth: 720, maxHeight: 720);
-    final directory = await getTemporaryDirectory();
-    final imgpath = "${directory.path}/cimg.png";
-    image.copy(imgpath);
-    File croppedFile = await ImageCropper.cropImage(
-        sourcePath: imgpath,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.square,
-            lockAspectRatio: true),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    return croppedFile;
+  Future<File> pickImage(BuildContext context, String imgUrl) async {
+    var response = await get(imgUrl);
+    File file = new File(
+        join((await getApplicationDocumentsDirectory()).path, 'imagetest.png'));
+    file.writeAsBytesSync(
+        response.bodyBytes); // This is a sync operation on a real
+    // app you'd probably prefer to use writeAsByte and handle its Future
+    File image =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ImageEditorPro(
+          appBarColor: Colors.blue, bottomBarColor: Colors.blue, image: file);
+    }));
+    return image;
   }
 
-  void respond(BuildContext context, String myName) async {
+  void respond(BuildContext context, String myName, String imageURL) async {
     String roundCode = round;
     db
         .document("games/$gameCode/rounds/$roundCode")
         .setData({"uploader": myName});
-    File image = await pickImage();
+    File image = await pickImage(context, imageURL);
     BuildContext dialogContext;
     Dialog d = Dialog(
       child: Padding(
