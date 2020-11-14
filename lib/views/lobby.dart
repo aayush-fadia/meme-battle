@@ -16,9 +16,25 @@ class Lobby extends StatelessWidget {
         body: Column(children: [
           Text(
               "This is your Lobby! Pull from the left to see players in the lobby!"),
-          FloatingActionButton(onPressed: () {
-            game.makeRoundCustom(context);
-          })
+          FloatingActionButton(
+              child: Icon(Icons.cloud_upload_sharp),
+              onPressed: () {
+                game.makeRoundCustom(context);
+              }),
+          FlatButton(
+              onPressed: () {
+                game.ready();
+              },
+              child: Text("Ready!")),
+          game.host
+              ? FlatButton(
+                  onPressed: game.allReady
+                      ? () {
+                          game.start();
+                        }
+                      : null,
+                  child: Text("Start Game"))
+              : Container()
         ]),
         drawer: Drawer(
           child: Column(children: [

@@ -11,7 +11,11 @@ import 'package:path_provider/path_provider.dart';
 
 import 'PlayerList.dart';
 
-enum GameState { FIRST_TIME, OUTSIDE, LOBBY }
+enum GameState { FIRST_TIME, OUTSIDE, LOBBY, PLAYING }
+
+GameState toGameState(String enumString) {
+  return GameState.values.firstWhere((e) => e.toString() == enumString);
+}
 
 class Game extends ChangeNotifier {
   GameState state = GameState.OUTSIDE;
@@ -19,6 +23,9 @@ class Game extends ChangeNotifier {
   String myName = "-1";
   PlayerState myState = PlayerState.WAITING;
   bool host = false;
+  bool allReady = false;
+  String currentRound = "-1";
+  List<String> rounds;
   final db = Firestore.instance;
   final cloud = FirebaseStorage.instance;
 
@@ -27,7 +34,31 @@ class Game extends ChangeNotifier {
   }
 
   void listenToSnap(DocumentSnapshot snap) {
-    Map data = snap.data;
+    db.document("games/$code").snapshots().listen((event) {
+      GameState _state = toGameState(event.data["state"]);
+      if (_state != state) {
+        state = _state;
+        notifyListeners();
+      }
+    });
+  }
+
+  void ready() {
+    myState = PlayerState.READY;
+    db
+        .document("games/$code/players/$myName")
+        .updateData({"status": myState.toString()});
+    notifyListeners();
+  }
+
+  bool start() {
+    if (allReady) {
+      state = GameState.PLAYING;
+      db.document("games/$code").setData({"state": state.toString()});
+      notifyListeners();
+      return true;
+    }
+    return false;
   }
 
   Future<void> loadNameFromDisk() async {
@@ -71,6 +102,27 @@ class Game extends ChangeNotifier {
     db.document("games/$code").snapshots().listen((snap) {
       listenToSnap(snap);
     });
+    //Host Listens to all player states, and sets all ready accordingly!
+    //Host starts logging round additions!
+    if (host) {
+      print("Listening to Plauyers!");
+      db.collection("games/$code/players").snapshots().listen((event) {
+        bool _allReady = true;
+        event.documents.forEach((element) {
+          print("CHECK READY!!!!!!");
+          print(_allReady);
+          print(Player.fromSnapshot(element).state == PlayerState.READY);
+          print(" ");
+          _allReady = _allReady &&
+              Player.fromSnapshot(element).state == PlayerState.READY;
+          if (allReady != _allReady) {
+            allReady = _allReady;
+            print("ALL READY CHANGED!");
+            notifyListeners();
+          }
+        });
+      });
+    }
   }
 
   Future<File> pickImage() async {
@@ -115,14 +167,13 @@ class Game extends ChangeNotifier {
               child: CircularProgressIndicator(),
             ),
             Expanded(
-              child: Text(
-                  "Uploading Product Data and Images to Server, please wait."),
+              child: Text("Uploading Image to Server, pls wait."),
             )
           ],
         ),
       ),
     );
-    final result = showDialog(
+    showDialog(
         context: context,
         builder: (context) {
           dialogContext = context;

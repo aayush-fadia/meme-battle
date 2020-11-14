@@ -17,6 +17,10 @@ class GameScreen extends StatelessWidget {
     } else if (game.state == GameState.LOBBY) {
       return ChangeNotifierProvider(
           create: (context) => PlayerList(game.code), child: Lobby());
+    } else if (game.state == GameState.PLAYING) {
+      return Scaffold(
+        body: Text("Game has started, not implemented yet!"),
+      );
     }
   }
 }
