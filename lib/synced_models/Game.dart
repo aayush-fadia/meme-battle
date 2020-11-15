@@ -60,6 +60,7 @@ class Game extends ChangeNotifier {
   }
 
   bool start() {
+    print(rounds.length);
     if (rounds.length > 0) {
       int roundIndex = Random().nextInt(rounds.length);
       String round_ = rounds[roundIndex];
@@ -134,13 +135,15 @@ class Game extends ChangeNotifier {
           print(_allReady);
           print(Player.fromSnapshot(element).state == PlayerState.READY);
           print(" ");
-          numPlayers_++;
+          numPlayers_ = numPlayers_ + 1;
+          numPlayers = numPlayers_;
+          print("ADDED SET NUM_PLAYERS TO " + numPlayers_.toString());
           _allReady = _allReady &&
               Player.fromSnapshot(element).state == PlayerState.READY;
           if (allReady != _allReady) {
             allReady = _allReady;
             print("ALL READY CHANGED!");
-            numPlayers = numPlayers_;
+            print("SET NUM_PLAYERS TO " + numPlayers.toString());
             notifyListeners();
           }
         });

@@ -37,7 +37,7 @@ class RoundSync extends ChangeNotifier {
   bool iVoted = false;
   Map<String, List<String>> votes;
   String roundWinner;
-
+  bool iResponded = false;
   RoundSync(String gameCode, bool host_, int numPlayers_) {
     numPlayers = numPlayers_;
     this.gameCode = gameCode;
@@ -106,6 +106,7 @@ class RoundSync extends ChangeNotifier {
     String roundCode = round;
     File image = await pickImage(context, imageURL);
     BuildContext dialogContext;
+    iResponded = true;
     Dialog d = Dialog(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -138,6 +139,7 @@ class RoundSync extends ChangeNotifier {
         .document("games/$gameCode/rounds/$round/responses/$myName")
         .setData({"uploaded": "1"});
     if (host) {
+      print("NUMPLAYERS: "+numPlayers.toString());
       db
           .collection("games/$gameCode/rounds/$round/responses")
           .snapshots()

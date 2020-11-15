@@ -21,14 +21,19 @@ class GameScreen extends StatelessWidget {
       return ChangeNotifierProvider(
           create: (context) => PlayerList(game.code), child: Lobby());
     } else if (game.state == GameState.PLAYING) {
+      print(game.numPlayers);
+      print("IS THE NUMBER OF GAME PLAYERS");
       return MultiProvider(providers: [
         ChangeNotifierProvider(create: (context) => PlayerList(game.code)),
         ChangeNotifierProvider(
             create: (context) =>
                 RoundSync(game.code, game.host, game.numPlayers))
       ], child: RoundsScreen());
-    }else if(game.state == GameState.ENDED){
-      return ChangeNotifierProvider(create: (context)=>PlayerList(game.code), child: EndScreen(),);
+    } else if (game.state == GameState.ENDED) {
+      return ChangeNotifierProvider(
+        create: (context) => PlayerList(game.code),
+        child: EndScreen(),
+      );
     }
   }
 }

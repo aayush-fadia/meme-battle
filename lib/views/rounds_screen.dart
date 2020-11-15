@@ -29,12 +29,12 @@ class RoundsScreen extends StatelessWidget {
     RoundSync round = Provider.of<RoundSync>(context);
     PlayerList playersList = Provider.of<PlayerList>(context);
     if (round.state == RoundState.THINKING) {
-      round.respond(context, game.myName, round.imageUrl);
+      if (!round.iResponded) {
+        round.respond(context, game.myName, round.imageUrl);
+      }
       return Scaffold(
           body: Column(
-            children: [
-              Text("Waiting for others")
-            ],
+            children: [Text("Waiting for others")],
           ),
           drawer: Drawer(
             child: Column(children: [
@@ -67,7 +67,7 @@ class RoundsScreen extends StatelessWidget {
         print(element.player);
       });
       round.responses.forEach((element) {
-        if(element.player != game.myName){
+        if (element.player != game.myName) {
           cardList.add(Item1(element.imageUrl));
           urlList.add(element.player);
         }
@@ -114,8 +114,7 @@ class RoundsScreen extends StatelessWidget {
                     ? null
                     : () {
                         print(_currentIndex);
-                        round.vote(
-                            urlList[_currentIndex], game.myName);
+                        round.vote(urlList[_currentIndex], game.myName);
                       },
               ),
               NiceButton(
