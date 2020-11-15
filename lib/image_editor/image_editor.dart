@@ -50,7 +50,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   // create some values
   Color pickerColor = Color(0xff443a49);
   Color currentColor = Color(0xff443a49);
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 600;
 
 // ValueChanged<Color> callback
   void changeColor(Color color) {
@@ -105,83 +105,11 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.orangeAccent,
         key: scaf,
         appBar: new AppBar(
           backgroundColor: Color(0xff5b86e5),
           actions: <Widget>[
-            new IconButton(
-                icon: Icon(FontAwesomeIcons.boxes),
-                onPressed: () {
-                  showCupertinoDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: new Text("Select Height Width"),
-                          actions: <Widget>[
-                            FlatButton(
-                                onPressed: () {
-                                  setState(() {
-                                    height = int.parse(heightcontroler.text);
-                                    width = int.parse(widthcontroler.text);
-                                  });
-                                  heightcontroler.clear();
-                                  widthcontroler.clear();
-                                  Navigator.pop(context);
-                                },
-                                child: new Text("Done"))
-                          ],
-                          content: new SingleChildScrollView(
-                            child: new Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                new Text("Define Height"),
-                                new SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                    controller: heightcontroler,
-                                    keyboardType:
-                                    TextInputType.numberWithOptions(),
-                                    decoration: InputDecoration(
-                                        hintText: 'Height',
-                                        contentPadding:
-                                        EdgeInsets.only(left: 10),
-                                        border: OutlineInputBorder())),
-                                new SizedBox(
-                                  height: 10,
-                                ),
-                                new Text("Define Width"),
-                                new SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                    controller: widthcontroler,
-                                    keyboardType:
-                                    TextInputType.numberWithOptions(),
-                                    decoration: InputDecoration(
-                                        hintText: 'Width',
-                                        contentPadding:
-                                        EdgeInsets.only(left: 10),
-                                        border: OutlineInputBorder())),
-                              ],
-                            ),
-                          ),
-                        );
-                      });
-                }),
-            new IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
-                  _controller.points.clear();
-                  setState(() {});
-                }),
-            new IconButton(
-                icon: Icon(Icons.camera),
-                onPressed: () {
-                  bottomsheets();
-                }),
             new FlatButton(
                 child: new Text("Done"),
                 textColor: Colors.white,
@@ -365,7 +293,15 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                 title: 'Text',
               ),
               CountdownTimer(
+
                 endTime: endTime,
+                widgetBuilder: (_, CurrentRemainingTime time) {
+                  int time_rem = 60*time.min + time.sec;
+                  return BottomBarContainer(
+                    title: "${time_rem}",
+                    icons: Icons.timer,
+                  );
+                },
                 onEnd: () {
                   File _imageFile;
                   _imageFile = null;
