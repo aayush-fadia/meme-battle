@@ -108,6 +108,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
         backgroundColor: Colors.orangeAccent,
         key: scaf,
         appBar: new AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Color(0xff5b86e5),
           actions: <Widget>[
             new FlatButton(
