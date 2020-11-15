@@ -35,9 +35,12 @@ class RoundsScreen extends StatelessWidget {
       }
       return Scaffold(
           body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [Text("Waiting for others",
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
+
               style: TextStyle(fontWeight: FontWeight.bold),)],
           ),
           drawer: Drawer(

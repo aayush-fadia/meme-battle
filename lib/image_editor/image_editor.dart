@@ -108,6 +108,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
         backgroundColor: Colors.grey,
         key: scaf,
         appBar: new AppBar(
+          backgroundColor: Color(0xff5b86e5),
           actions: <Widget>[
             new IconButton(
                 icon: Icon(FontAwesomeIcons.boxes),
@@ -206,7 +207,6 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                   });
                 }),
           ],
-          backgroundColor: widget.appBarColor,
         ),
         body: Center(
           child: Screenshot(
