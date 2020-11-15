@@ -162,6 +162,11 @@ class RoundSync extends ChangeNotifier {
     db
         .document("games/$gameCode/rounds/$round/votes/$forPlayer")
         .setData({myName: "1"}, merge: true);
+
+    db
+        .document("games/$gameCode/players/$forPlayer")
+        .updateData({"score": FieldValue.increment(5)});
+
     iVoted = true;
     if (host) {
       db
