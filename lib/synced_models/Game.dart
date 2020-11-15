@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'PlayerList.dart';
 
-enum GameState { FIRST_TIME, OUTSIDE, LOBBY, PLAYING }
+enum GameState { FIRST_TIME, OUTSIDE, LOBBY, PLAYING, ENDED }
 
 GameState toGameState(String enumString) {
   return GameState.values.firstWhere((e) => e.toString() == enumString);
@@ -39,8 +39,13 @@ class Game extends ChangeNotifier {
   void listenToSnap(DocumentSnapshot snap) {
     db.document("games/$code").snapshots().listen((event) {
       GameState _state = toGameState(event.data["state"]);
+      String currentRound_ = event.data["round"];
       if (_state != state) {
         state = _state;
+        notifyListeners();
+      }
+      if (currentRound != currentRound_) {
+        currentRound = currentRound_;
         notifyListeners();
       }
     });
@@ -55,18 +60,21 @@ class Game extends ChangeNotifier {
   }
 
   bool start() {
+    if (rounds.length > 0) {
       int roundIndex = Random().nextInt(rounds.length);
       String round_ = rounds[roundIndex];
       rounds.removeAt(roundIndex);
       state = GameState.PLAYING;
       db
           .document("games/$code")
-          .setData({"state": state.toString(), "round": round_});
+          .updateData({"state": state.toString(), "round": round_});
       db
           .document("games/$code/rounds/$round_")
-          .setData({"state": RoundState.THINKING.toString()});
-      notifyListeners();
-      return true;
+          .updateData({"state": RoundState.THINKING.toString()});
+    } else {
+      state = GameState.ENDED;
+      db.document("games/$code").updateData({"state": state.toString()});
+    }
   }
 
   Future<void> loadNameFromDisk() async {
@@ -124,15 +132,11 @@ class Game extends ChangeNotifier {
         event.documents.forEach((element) {
           print("CHECK READY!!!!!!");
           print(_allReady);
-          print(Player
-              .fromSnapshot(element)
-              .state == PlayerState.READY);
+          print(Player.fromSnapshot(element).state == PlayerState.READY);
           print(" ");
           numPlayers_++;
           _allReady = _allReady &&
-              Player
-                  .fromSnapshot(element)
-                  .state == PlayerState.READY;
+              Player.fromSnapshot(element).state == PlayerState.READY;
           if (allReady != _allReady) {
             allReady = _allReady;
             print("ALL READY CHANGED!");

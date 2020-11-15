@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meme_battle/synced_models/Game.dart';
 import 'package:meme_battle/synced_models/PlayerList.dart';
 import 'package:meme_battle/synced_models/Rounds.dart';
+import 'package:meme_battle/views/game_end_screen.dart';
 import 'package:meme_battle/views/lobby.dart';
 import 'package:meme_battle/views/outside_screen.dart';
 import 'package:meme_battle/views/rounds_screen.dart';
@@ -26,6 +27,8 @@ class GameScreen extends StatelessWidget {
             create: (context) =>
                 RoundSync(game.code, game.host, game.numPlayers))
       ], child: RoundsScreen());
+    }else if(game.state == GameState.ENDED){
+      return ChangeNotifierProvider(create: (context)=>PlayerList(game.code), child: EndScreen(),);
     }
   }
 }
