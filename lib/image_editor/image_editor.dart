@@ -16,6 +16,10 @@ import 'package:image_editor_pro/modules/textview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:signature/signature.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+
+import 'package:meme_battle/synced_models/PlayerList.dart';
+import 'package:provider/provider.dart';
 
 TextEditingController heightcontroler = TextEditingController();
 TextEditingController widthcontroler = TextEditingController();
@@ -46,6 +50,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   // create some values
   Color pickerColor = Color(0xff443a49);
   Color currentColor = Color(0xff443a49);
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
 
 // ValueChanged<Color> callback
   void changeColor(Color color) {
@@ -359,6 +364,30 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                 },
                 title: 'Text',
               ),
+              CountdownTimer(
+                endTime: endTime,
+                onEnd: () {
+                  File _imageFile;
+                  _imageFile = null;
+                  screenshotController
+                      .capture(
+                      delay: Duration(milliseconds: 500), pixelRatio: 1.5)
+                      .then((File image) async {
+                    //print("Capture Done");
+                    setState(() {
+                      _imageFile = image;
+                    });
+                    final paths = await getExternalStorageDirectory();
+                    image.copy(paths.path +
+                        '/' +
+                        DateTime.now().millisecondsSinceEpoch.toString() +
+                        '.png');
+                    Navigator.pop(context, image);
+                  }).catchError((onError) {
+                    print(onError);
+                  });
+                },
+              ),
               BottomBarContainer(
                 icons: FontAwesomeIcons.eraser,
                 ontap: () {
@@ -370,17 +399,6 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                   howmuchwidgetis = 0;
                 },
                 title: 'Eraser',
-              ),
-              BottomBarContainer(
-                icons: Icons.photo,
-                ontap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return ColorPiskersSlider();
-                      });
-                },
-                title: 'Filter',
               ),
               BottomBarContainer(
                 icons: FontAwesomeIcons.smile,

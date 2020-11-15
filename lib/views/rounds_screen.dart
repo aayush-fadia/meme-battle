@@ -29,16 +29,11 @@ class RoundsScreen extends StatelessWidget {
     RoundSync round = Provider.of<RoundSync>(context);
     PlayerList playersList = Provider.of<PlayerList>(context);
     if (round.state == RoundState.THINKING) {
+      round.respond(context, game.myName, round.imageUrl);
       return Scaffold(
           body: Column(
             children: [
-              round.imageUrl != null
-                  ? Image.network(round.imageUrl)
-                  : Container(),
-              FloatingActionButton(onPressed: () {
-                round.respond(context, game.myName, round.imageUrl);
-                game.ready();
-              })
+              Text("Waiting for others")
             ],
           ),
           drawer: Drawer(
