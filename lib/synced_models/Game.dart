@@ -138,6 +138,10 @@ class Game extends ChangeNotifier {
     notifyListeners();
   }
 
+  void inform(){
+    notifyListeners();
+  }
+
   void joinGame(String gameCode) {
     code = gameCode;
     host = false;

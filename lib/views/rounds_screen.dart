@@ -12,6 +12,9 @@ import 'package:meme_battle/synced_models/Rounds.dart';
 import 'package:nice_button/NiceButton.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+
 
 class RoundsScreen extends StatelessWidget {
   List<T> map<T>(List list, Function handler) {
@@ -194,6 +197,10 @@ class RoundsScreen extends StatelessWidget {
           if (game.host) {
             game.start();
           }
+          else{
+            game.inform();
+          }
+
         });
       }
       List <String> winner = [];
@@ -222,7 +229,9 @@ class RoundsScreen extends StatelessWidget {
               backgroundColor: Color(0xff5b86e5),),
             body: Column(
               children: <Widget>[
+                new Padding(padding: EdgeInsets.only(top: 50.0)),
                 Expanded(
+
                     child: SizedBox(
                         height: 200.0,
                         child:
@@ -230,12 +239,19 @@ class RoundsScreen extends StatelessWidget {
                           itemCount: winner.length,
                           itemBuilder: (context, i) {
                             return Container(
+
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children :  <Widget>[
-                                    Text(winner[i],
+
+                                    Text(winner[i].toUpperCase(),
                                     textAlign: TextAlign.center,
+                                    textScaleFactor: 5.0,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontWeight: FontWeight.bold),),
+
+                                        style: GoogleFonts.lato(
+                                          textStyle: TextStyle(fontSize: 20.0 ,color: Colors.blue, letterSpacing: .5),
+                                        ),),
                                     Divider(
                                       indent: 16,
                                       endIndent: 16,
