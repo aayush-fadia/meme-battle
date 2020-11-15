@@ -29,6 +29,7 @@ class RoundsScreen extends StatelessWidget {
     RoundSync round = Provider.of<RoundSync>(context);
     PlayerList playersList = Provider.of<PlayerList>(context);
     if (round.state == RoundState.THINKING) {
+      print("IRESPONDED: " + round.iResponded.toString());
       if (!round.iResponded) {
         round.respond(context, game.myName, round.imageUrl);
       }
@@ -148,11 +149,14 @@ class RoundsScreen extends StatelessWidget {
             ],
           ));
     } else if (round.state == RoundState.ENDING) {
-      Future.delayed(Duration(milliseconds: 15000), () {
-        if (game.host) {
-          game.start();
-        }
-      });
+      if (!round.iStartedNew) {
+        round.iStartedNew = true;
+        Future.delayed(Duration(milliseconds: 15000), () {
+          if (game.host) {
+            game.start();
+          }
+        });
+      }
       round.votes.forEach((key, value) {
         print(key + " Voted for:");
         value.forEach((element) {
@@ -160,6 +164,9 @@ class RoundsScreen extends StatelessWidget {
         });
         print(" ");
       });
+      round.iVoted = false;
+      round.iResponded = false;
+      round.iStartedNew = false;
       return Container();
     } else {
       return Container();

@@ -38,52 +38,51 @@ class RoundSync extends ChangeNotifier {
   Map<String, List<String>> votes;
   String roundWinner;
   bool iResponded = false;
+  bool iStartedNew = false;
 
-  RoundSync(String gameCode, bool host_, int numPlayers_) {
+  RoundSync(String gameCode, bool host_, int numPlayers_, String round_id) {
     numPlayers = numPlayers_;
     this.gameCode = gameCode;
-    db.document("games/$gameCode").snapshots().listen((event) {
-      round = event.data["round"];
-      db.document("games/$gameCode/rounds/$round").snapshots().listen((event) {
-        state = toRoundState(event.data["state"]);
-        if (state == RoundState.THINKING) {
-          cloud
-              .ref()
-              .child("games/$gameCode/$round/template.png")
-              .getDownloadURL()
-              .then((value) {
-            imageUrl = value;
+    this.round = round_id;
+    db.document("games/$gameCode/rounds/$round").snapshots().listen((event) {
+      state = toRoundState(event.data["state"]);
+      if (state == RoundState.THINKING) {
+        cloud
+            .ref()
+            .child("games/$gameCode/$round/template.png")
+            .getDownloadURL()
+            .then((value) {
+          imageUrl = value;
+          notifyListeners();
+        });
+      } else if (state == RoundState.VOTING) {
+        responses = new List();
+        db
+            .collection("games/$gameCode/rounds/$round/responses")
+            .getDocuments()
+            .then((value) {
+          value.documents.forEach((element) async {
+            String imageUrl = await cloud
+                .ref()
+                .child("games/$gameCode/$round/${element.documentID}.png")
+                .getDownloadURL();
+            responses.add(Response(element.documentID, imageUrl));
+            print("Added Response!");
             notifyListeners();
           });
-        } else if (state == RoundState.VOTING) {
-          responses = new List();
-          db
-              .collection("games/$gameCode/rounds/$round/responses")
-              .getDocuments()
-              .then((value) {
-            value.documents.forEach((element) async {
-              String imageUrl = await cloud
-                  .ref()
-                  .child("games/$gameCode/$round/${element.documentID}.png")
-                  .getDownloadURL();
-              responses.add(Response(element.documentID, imageUrl));
-              print("Added Response!");
-              notifyListeners();
-            });
+        });
+      } else if (state == RoundState.ENDING) {
+        db
+            .collection("games/$gameCode/rounds/$round/votes/")
+            .getDocuments()
+            .then((event) {
+          votes = Map();
+          event.documents.forEach((element) {
+            votes[element.documentID] = element.data.keys.toList();
           });
-        } else if (state == RoundState.ENDING) {
-          db
-              .collection("games/$gameCode/rounds/$round/votes/")
-              .getDocuments()
-              .then((event) {
-            votes = Map();
-            event.documents.forEach((element) {
-              votes[element.documentID] = element.data.keys.toList();
-            });
-            notifyListeners();
-          });
-        }
-      });
+          notifyListeners();
+        });
+      }
     });
     host = host_;
   }

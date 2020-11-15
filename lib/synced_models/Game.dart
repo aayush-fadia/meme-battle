@@ -28,12 +28,14 @@ class Game extends ChangeNotifier {
   bool allReady = false;
   String currentRound = "-1";
   List<String> rounds;
+  List<String> newRounds;
   int numPlayers;
   final db = Firestore.instance;
   final cloud = FirebaseStorage.instance;
 
   Game() {
     loadNameFromDisk();
+    print("Constructed");
   }
 
   void listenToSnap(DocumentSnapshot snap) {
@@ -60,11 +62,15 @@ class Game extends ChangeNotifier {
   }
 
   bool start() {
-    print(rounds.length);
-    if (rounds.length > 0) {
-      int roundIndex = Random().nextInt(rounds.length);
-      String round_ = rounds[roundIndex];
-      rounds.removeAt(roundIndex);
+    if(newRounds == null){
+      newRounds = new List();
+      newRounds.addAll(rounds);
+    }
+    print(newRounds.length);
+    if (newRounds.length > 0) {
+      int roundIndex = Random().nextInt(newRounds.length);
+      String round_ = newRounds[roundIndex];
+      newRounds.removeAt(roundIndex);
       state = GameState.PLAYING;
       db
           .document("games/$code")
@@ -72,6 +78,7 @@ class Game extends ChangeNotifier {
       db
           .document("games/$code/rounds/$round_")
           .updateData({"state": RoundState.THINKING.toString()});
+      print("LENGTH OF ROUNDS: "+newRounds.length.toString());
     } else {
       state = GameState.ENDED;
       db.document("games/$code").updateData({"state": state.toString()});
