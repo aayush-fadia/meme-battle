@@ -1,14 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:meme_battle/synced_models/Game.dart';
 import 'package:meme_battle/synced_models/PlayerList.dart';
 import 'package:meme_battle/synced_models/Rounds.dart';
 import 'package:nice_button/NiceButton.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:permission_handler/permission_handler.dart';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+
+
+
 
 class RoundsScreen extends StatelessWidget {
+
+
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -20,6 +36,7 @@ class RoundsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _requestPermission();
     Game game = Provider.of<Game>(context);
     RoundSync round = Provider.of<RoundSync>(context);
     PlayerList playersList = Provider.of<PlayerList>(context);
@@ -62,11 +79,8 @@ class RoundsScreen extends StatelessWidget {
           ));
     }
     else if (round.state == RoundState.VOTING) {
-      List cardList=[
-        Item1(round.imageUrl),
-        Item1(round.imageUrl),
-        Item1(round.imageUrl)
-      ];
+      List cardList=[];
+      round.responses.forEach((element) {cardList.add(Item1(element.imageUrl));});
       var _currentIndex = 1;
       return MaterialApp(
         title: 'Flutter Card Carousel App',
@@ -113,9 +127,19 @@ class RoundsScreen extends StatelessWidget {
                   radius: 52.0,
                   text: "Vote This",
                   background: Color(0xff5b86e5),
+                  onPressed: round.iVoted? null : () {
+                    round.vote(round.responses[_currentIndex].player, game.myName);
+                  },
+                ),
+                NiceButton(
+                  // width: 515,
+                  elevation: 8.0,
+                  radius: 52.0,
+                  text: "Save This",
+                  background: Color(0xff5b86e5),
                   onPressed: () {
-                    round.state = RoundState.THINKING;
-                    game.ready();
+                    String img = round.imageUrl;
+                    _save(img);
                   },
                 ),
                 Row(
@@ -139,6 +163,25 @@ class RoundsScreen extends StatelessWidget {
     }
 
     }
+
+  _save(String img) async {
+    var response = await Dio().get(img,
+        options: Options(responseType: ResponseType.bytes));
+    final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.data),
+        quality: 60,
+        name: "hello");
+    print(result);
+  }
+  _requestPermission() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+    ].request();
+
+    final info = statuses[Permission.storage].toString();
+    print(info);
+
+  }
   }
 
 class Item1 extends StatelessWidget {

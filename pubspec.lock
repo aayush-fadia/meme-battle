@@ -283,7 +283,7 @@ packages:
     source: hosted
     version: "1.0.6"
   image_gallery_saver:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image_gallery_saver
       url: "https://pub.dartlang.org"
