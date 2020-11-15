@@ -45,7 +45,7 @@ class RoundsScreen extends StatelessWidget {
               DrawerHeader(
                 child: Text('Players Ranking'),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Color(0xff5b86e5),
                 ),
               ),
               ListView(
@@ -78,7 +78,8 @@ class RoundsScreen extends StatelessWidget {
       });
       var _currentIndex = 0;
       return Scaffold(
-          appBar: AppBar(title: Text("Voting")),
+          appBar: AppBar(title: Text("Voting"),
+          backgroundColor: Color(0xff5b86e5),),
           body: Column(
             children: <Widget>[
               CarouselSlider(
@@ -144,7 +145,7 @@ class RoundsScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == index
-                          ? Colors.blueAccent
+                          ? Color(0xff5b86e5)
                           : Colors.grey,
                     ),
                   );
@@ -183,7 +184,8 @@ class RoundsScreen extends StatelessWidget {
       print(winner);
       if(winner.length>0) {
         return Scaffold(
-            appBar: AppBar(title: Text("Round-wise Winners")),
+            appBar: AppBar(title: Text("Round-wise Winners"),
+              backgroundColor: Color(0xff5b86e5),),
             body: Column(
               children: <Widget>[
                 Expanded(

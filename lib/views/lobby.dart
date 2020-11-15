@@ -16,7 +16,8 @@ class Lobby extends StatelessWidget {
     return MaterialApp(
         title: "Lobby",
         home: Scaffold(
-            appBar: AppBar(title: Text("Lobby", textAlign: TextAlign.center,)),
+            appBar: AppBar(title: Text("Lobby", textAlign: TextAlign.center,),
+              backgroundColor: Color(0xff5b86e5),),
             body: Container(
                 padding: const EdgeInsets.all(30.0),
                 color: Colors.white,
@@ -85,7 +86,7 @@ class Lobby extends StatelessWidget {
               DrawerHeader(
                 child: Text('Leaderboard'),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Color(0xff5b86e5),
                 ),
               ),
               ListView(
