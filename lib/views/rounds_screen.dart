@@ -204,6 +204,7 @@ class RoundsScreen extends StatelessWidget {
         });
       }
       List <String> winner = [];
+
       int max_votes = 0;
       round.votes.forEach((key, value) {
         print(key + " Voted for:");
@@ -216,7 +217,7 @@ class RoundsScreen extends StatelessWidget {
       });
       round.votes.forEach((key, value){
 
-          winner.add(key + ", Point: " + (value.length*5).toString());
+          winner.add(key + ": " + (value.length*5).toString());
       });
       round.iVoted = false;
       round.iResponded = false;
@@ -246,7 +247,7 @@ class RoundsScreen extends StatelessWidget {
 
                                     Text(winner[i].toUpperCase(),
                                     textAlign: TextAlign.center,
-                                    textScaleFactor: 5.0,
+                                    textScaleFactor: 2.0,
                                     overflow: TextOverflow.ellipsis,
 
                                         style: GoogleFonts.lato(
