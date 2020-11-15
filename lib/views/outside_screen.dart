@@ -56,7 +56,9 @@ class _OutSideScreenState extends State<OutSideScreen> {
                               validator: null,
                               textAlign: TextAlign.center,
                               style: new TextStyle(
-                                  fontFamily: "Poppins", fontSize: 25, ),
+                                fontFamily: "Poppins",
+                                fontSize: 25,
+                              ),
                             ),
                             new Padding(padding: EdgeInsets.only(top: 50.0)),
                             NiceButton(
@@ -79,33 +81,33 @@ class _OutSideScreenState extends State<OutSideScreen> {
                 ))));
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   Game game = Provider.of<Game>(context);
-  //   return Center(
-  //     child: Scaffold(
-  //       appBar: AppBar(
-  //         title: Text("OutsideScreen"),
-  //       ),
-  //       body: Column(
-  //         children: [
-  //           Text("Hi, ${game.myName}"),
-  //           TextField(
-  //             controller: codeCtrl,
-  //             decoration: InputDecoration(hintText: "Enter Game Code Here!"),
-  //           ),
-  //           FloatingActionButton.extended(
-  //               onPressed: () {
-  //                 if (codeCtrl.text.isEmpty) {
-  //                   game.createGame();
-  //                 } else {
-  //                   game.joinGame(codeCtrl.text);
-  //                 }
-  //               },
-  //               label: Text("Create/Join Game!"))
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+// @override
+// Widget build(BuildContext context) {
+//   Game game = Provider.of<Game>(context);
+//   return Center(
+//     child: Scaffold(
+//       appBar: AppBar(
+//         title: Text("OutsideScreen"),
+//       ),
+//       body: Column(
+//         children: [
+//           Text("Hi, ${game.myName}"),
+//           TextField(
+//             controller: codeCtrl,
+//             decoration: InputDecoration(hintText: "Enter Game Code Here!"),
+//           ),
+//           FloatingActionButton.extended(
+//               onPressed: () {
+//                 if (codeCtrl.text.isEmpty) {
+//                   game.createGame();
+//                 } else {
+//                   game.joinGame(codeCtrl.text);
+//                 }
+//               },
+//               label: Text("Create/Join Game!"))
+//         ],
+//       ),
+//     ),
+//   );
+// }
 }

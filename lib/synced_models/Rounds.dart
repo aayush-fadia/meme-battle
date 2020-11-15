@@ -41,6 +41,16 @@ class RoundSync extends ChangeNotifier {
             notifyListeners();
           });
         }
+        else if (state == RoundState.VOTING){
+          cloud
+              .ref()
+              .child("games/$gameCode/$round/template.png")
+              .getDownloadURL()
+              .then((value) {
+            imageUrl = value;
+            notifyListeners();
+          });
+        }
       });
     });
     host = host_;
@@ -97,5 +107,7 @@ class RoundSync extends ChangeNotifier {
         .putFile(image)
         .onComplete;
     Navigator.pop(dialogContext);
+    state = RoundState.VOTING;
+    notifyListeners();
   }
 }
