@@ -89,8 +89,8 @@ class Game extends ChangeNotifier {
         db.document("games/$code").updateData({"state": state.toString()});
       }
     } else {
-      // toLobby();
-      Future.delayed(Duration(milliseconds: 5000), () {
+      toLobby();
+      Future.delayed(Duration(milliseconds: 3000), () {
         if (newRounds.length > 0) {
           int roundIndex = Random().nextInt(newRounds.length);
           String round_ = newRounds[roundIndex];
