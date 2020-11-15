@@ -34,14 +34,14 @@ class RoundsScreen extends StatelessWidget {
         round.respond(context, game.myName, round.imageUrl);
       }
       return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [Text("Waiting for others",
+        backgroundColor:Colors.orangeAccent,
+          body: Center(
+            child :Text("Waiting for others",
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
-
-              style: TextStyle(fontWeight: FontWeight.bold),)],
+              style: TextStyle(fontWeight: FontWeight.bold,
+                  fontSize: 30.0,
+                color: Color(0xff5b86e5)),),
           ),
           drawer: Drawer(
             child: Column(children: [

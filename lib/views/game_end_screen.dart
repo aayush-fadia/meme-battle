@@ -9,6 +9,7 @@ class EndScreen extends StatelessWidget {
     PlayerList playersList = Provider.of<PlayerList>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color(0xff5b86e5),
           title: Text(
         "Game Over",
         textAlign: TextAlign.center,
