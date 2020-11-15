@@ -149,7 +149,9 @@ class RoundsScreen extends StatelessWidget {
           ));
     } else if (round.state == RoundState.ENDING) {
       Future.delayed(Duration(milliseconds: 15000), () {
-        game.start();
+        if (game.host) {
+          game.start();
+        }
       });
       round.votes.forEach((key, value) {
         print(key + " Voted for:");
