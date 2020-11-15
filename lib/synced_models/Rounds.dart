@@ -17,6 +17,13 @@ RoundState toRoundState(String enumString) {
   return RoundState.values.firstWhere((e) => e.toString() == enumString);
 }
 
+class Response {
+  String imageUrl;
+  String player;
+
+  Response(this.imageUrl, this.player);
+}
+
 class RoundSync extends ChangeNotifier {
   final db = Firestore.instance;
   final cloud = FirebaseStorage.instance;
@@ -25,6 +32,9 @@ class RoundSync extends ChangeNotifier {
   bool host;
   RoundState state;
   String gameCode;
+  int numPlayers;
+  List<Response> responses;
+  bool iVoted = false;
 
   RoundSync(String gameCode, bool host_) {
     db.document("games/$gameCode").snapshots().listen((event) {
@@ -40,14 +50,28 @@ class RoundSync extends ChangeNotifier {
             imageUrl = value;
             notifyListeners();
           });
-        }
-        else if (state == RoundState.VOTING){
+        } else if (state == RoundState.VOTING) {
           cloud
               .ref()
               .child("games/$gameCode/$round/template.png")
               .getDownloadURL()
               .then((value) {
             imageUrl = value;
+            notifyListeners();
+          });
+        } else if (state == RoundState.VOTING) {
+          responses = new List();
+          db
+              .collection("games/$gameCode/rounds/$round/responses")
+              .getDocuments()
+              .then((value) {
+            value.documents.forEach((element) async {
+              String imageUrl = await cloud
+                  .ref()
+                  .child("games/$gameCode/$round/${element.documentID}.png")
+                  .getDownloadURL();
+              responses.add(Response(element.documentID, imageUrl));
+            });
             notifyListeners();
           });
         }
@@ -106,8 +130,30 @@ class RoundSync extends ChangeNotifier {
         .child("games/$gameCode/$roundCode/$myName.png")
         .putFile(image)
         .onComplete;
+    await db
+        .document("games/$gameCode/rounds/$round/responses/$myName")
+        .setData({"uploaded": "1"});
+    if (host) {
+      db
+          .collection("games/$gameCode/rounds/$round/responses")
+          .snapshots()
+          .listen((event) {
+        if (event.documents.length == numPlayers) {
+          db
+              .document("games/$gameCode/rounds/")
+              .updateData({"state": RoundState.VOTING});
+        }
+      });
+    }
     Navigator.pop(dialogContext);
-    state = RoundState.VOTING;
+    notifyListeners();
+  }
+
+  void vote(String forPlayer, String myName) {
+    db
+        .document("games/$gameCode/rounds/$round/votes/$forPlayer/$myName")
+        .setData({"vote": "1"});
+    iVoted = true;
     notifyListeners();
   }
 }
