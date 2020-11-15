@@ -34,40 +34,42 @@ class RoundsScreen extends StatelessWidget {
 
     if (round.state == RoundState.THINKING) {
       print("IRESPONDED: " + round.iResponded.toString());
-      if (!round.iResponded) {
+      if (!round.iResponded && round.imageUrl != null) {
         round.respond(context, game.myName, round.imageUrl);
       }
       return Scaffold(
-              appBar: AppBar(title: Text("Lobby", textAlign: TextAlign.center,)),
-              body: Container(
-                  padding: const EdgeInsets.all(30.0),
-                  color: Colors.white,
-                  child: Container(
-                      child: Center(
-                          child: Column(children: [
-                            Padding(padding: EdgeInsets.only(top: 140.0)),
-                            Text(
-                              "Waiting for other's memes!",
-                              textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                  color: hexToColor("#F2A03D"), fontSize: 25.0),
-                            ),
-                          ])))),
+          appBar: AppBar(
+              title: Text(
+            "Lobby",
+            textAlign: TextAlign.center,
+          )),
+          body: Container(
+              padding: const EdgeInsets.all(30.0),
+              color: Colors.white,
+              child: Container(
+                  child: Center(
+                      child: Column(children: [
+                Padding(padding: EdgeInsets.only(top: 140.0)),
+                Text(
+                  "Waiting for other's memes!",
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                      color: hexToColor("#F2A03D"), fontSize: 25.0),
+                ),
+              ])))),
           drawer: Drawer(
-            child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  DrawerHeader(
-                    child: Text('Leaderboard'),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                    ),
-                  ),
-                  ListView(
-                      shrinkWrap: true,
-                      children: playersList.playersList
-                          .map(
-                            (e) => ListTile(
+            child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+              DrawerHeader(
+                child: Text('Leaderboard'),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+              ),
+              ListView(
+                  shrinkWrap: true,
+                  children: playersList.playersList
+                      .map(
+                        (e) => ListTile(
                           leading: Icon(e.state == PlayerState.READY
                               ? Icons.done
                               : Icons.timer),
@@ -75,8 +77,8 @@ class RoundsScreen extends StatelessWidget {
                           trailing: Text(e.score.toString()),
                         ),
                       )
-                          .toList()),
-                ]),
+                      .toList()),
+            ]),
           ));
     } else if (round.state == RoundState.VOTING) {
       List cardList = [];
@@ -93,7 +95,7 @@ class RoundsScreen extends StatelessWidget {
       });
       var _currentIndex = 0;
       return Scaffold(
-        backgroundColor: Colors.white,
+          backgroundColor: Colors.white,
           appBar: AppBar(title: Text("Time to VOTE!")),
           body: Column(
             children: <Widget>[
@@ -130,7 +132,8 @@ class RoundsScreen extends StatelessWidget {
                 elevation: 8.0,
                 radius: 52.0,
                 text: "Vote!",
-                background: round.iVoted?Colors.lightGreen:Color(0xff5b86e5),
+                background:
+                    round.iVoted ? Colors.lightGreen : Color(0xff5b86e5),
                 onPressed: round.iVoted
                     ? null
                     : () {
@@ -170,20 +173,18 @@ class RoundsScreen extends StatelessWidget {
             ],
           ),
           drawer: Drawer(
-            child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  DrawerHeader(
-                    child: Text('Leaderboard'),
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                    ),
-                  ),
-                  ListView(
-                      shrinkWrap: true,
-                      children: playersList.playersList
-                          .map(
-                            (e) => ListTile(
+            child: ListView(padding: EdgeInsets.zero, children: <Widget>[
+              DrawerHeader(
+                child: Text('Leaderboard'),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+              ),
+              ListView(
+                  shrinkWrap: true,
+                  children: playersList.playersList
+                      .map(
+                        (e) => ListTile(
                           leading: Icon(e.state == PlayerState.READY
                               ? Icons.done
                               : Icons.timer),
@@ -191,10 +192,9 @@ class RoundsScreen extends StatelessWidget {
                           trailing: Text(e.score.toString()),
                         ),
                       )
-                          .toList()),
-                ]),
-          )
-      );
+                      .toList()),
+            ]),
+          ));
     } else if (round.state == RoundState.ENDING) {
       if (!round.iStartedNew) {
         round.iStartedNew = true;
@@ -204,20 +204,18 @@ class RoundsScreen extends StatelessWidget {
           }
         });
       }
-      List <String> winner = [];
+      List<String> winner = [];
       int max_votes = 0;
       round.votes.forEach((key, value) {
         print(key + " Voted for:");
-        if(value.length > max_votes)
-          max_votes = value.length;
+        if (value.length > max_votes) max_votes = value.length;
         value.forEach((element) {
           print(element);
         });
         print(" ");
       });
-      round.votes.forEach((key, value){
-        if(value.length==max_votes)
-          winner.add(key);
+      round.votes.forEach((key, value) {
+        if (value.length == max_votes) winner.add(key);
       });
       round.iVoted = false;
       round.iResponded = false;
@@ -229,12 +227,11 @@ class RoundsScreen extends StatelessWidget {
               ListView.builder(
                 itemCount: winner.length,
                 itemBuilder: (context, i) {
-                 return Text(winner[i]);
+                  return Text(winner[i]);
                 },
               )
             ],
-          )
-      );
+          ));
     } else {
       return Container();
     }

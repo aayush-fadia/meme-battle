@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' show get;
+import 'package:meme_battle/univ.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -88,9 +89,10 @@ class RoundSync extends ChangeNotifier {
   }
 
   Future<File> pickImage(BuildContext context, String imgUrl) async {
+    print("IMAGE URL!!!!!!!!!!!" + imgUrl);
     var response = await get(imgUrl);
-    File file = new File(
-        join((await getApplicationDocumentsDirectory()).path, 'imagetest.png'));
+    File file = new File(join((await getApplicationDocumentsDirectory()).path,
+        '${getRoundCode()}.png'));
     file.writeAsBytesSync(
         response.bodyBytes); // This is a sync operation on a real
     // app you'd probably prefer to use writeAsByte and handle its Future
