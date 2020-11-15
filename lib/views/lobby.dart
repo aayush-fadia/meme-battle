@@ -84,7 +84,11 @@ class Lobby extends StatelessWidget {
               padding: EdgeInsets.zero,
                 children: <Widget>[
               DrawerHeader(
-                child: Text('Leaderboard'),
+                child: Text('Leaderboard',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),),
                 decoration: BoxDecoration(
                   color: Color(0xff5b86e5),
                 ),
