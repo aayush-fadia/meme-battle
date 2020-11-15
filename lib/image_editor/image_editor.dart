@@ -47,7 +47,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   // create some values
   Color pickerColor = Color(0xff443a49);
   Color currentColor = Color(0xff443a49);
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 600;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 90;
 
 // ValueChanged<Color> callback
   void changeColor(Color color) {
