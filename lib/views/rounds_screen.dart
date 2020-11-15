@@ -157,17 +157,37 @@ class RoundsScreen extends StatelessWidget {
           }
         });
       }
+      List <String> winner = [];
+      int max_votes = 0;
       round.votes.forEach((key, value) {
         print(key + " Voted for:");
+        if(value.length > max_votes)
+          max_votes = value.length;
         value.forEach((element) {
           print(element);
         });
         print(" ");
       });
+      round.votes.forEach((key, value){
+        if(value.length==max_votes)
+          winner.add(key);
+      });
       round.iVoted = false;
       round.iResponded = false;
       round.iStartedNew = false;
-      return Container();
+      return Scaffold(
+          appBar: AppBar(title: Text("Flutter Card Carousel")),
+          body: Column(
+            children: <Widget>[
+              ListView.builder(
+                itemCount: winner.length,
+                itemBuilder: (context, i) {
+                 return Text(winner[i]);
+                },
+              )
+            ],
+          )
+      );
     } else {
       return Container();
     }
