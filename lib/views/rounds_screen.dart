@@ -53,20 +53,18 @@ class RoundsScreen extends StatelessWidget {
                   shrinkWrap: true,
                   children: playersList.playersList
                       .map(
-                        (e) =>
-                        ListTile(
+                        (e) => ListTile(
                           leading: Icon(e.state == PlayerState.READY
                               ? Icons.done
                               : Icons.timer),
                           title: Text(e.name),
                           trailing: Text(e.score.toString()),
                         ),
-                  )
+                      )
                       .toList()),
             ]),
           ));
-    }
-    else if (round.state == RoundState.VOTING) {
+    } else if (round.state == RoundState.VOTING) {
       List cardList = [];
       round.responses.forEach((element) {
         print(element.imageUrl);
@@ -95,14 +93,8 @@ class RoundsScreen extends StatelessWidget {
                 items: cardList.map((card) {
                   return Builder(builder: (BuildContext context) {
                     return Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.30,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
+                      height: MediaQuery.of(context).size.height * 0.30,
+                      width: MediaQuery.of(context).size.width,
                       child: Card(
                         color: Colors.blueAccent,
                         child: card,
@@ -121,10 +113,10 @@ class RoundsScreen extends StatelessWidget {
                 onPressed: round.iVoted
                     ? null
                     : () {
-                  print(_currentIndex);
-                  round.vote(
-                      round.responses[_currentIndex].player, game.myName);
-                },
+                        print(_currentIndex);
+                        round.vote(
+                            round.responses[_currentIndex].player, game.myName);
+                      },
               ),
               NiceButton(
                 // width: 515,
@@ -144,7 +136,7 @@ class RoundsScreen extends StatelessWidget {
                     width: 10.0,
                     height: 10.0,
                     margin:
-                    EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == index
@@ -156,8 +148,7 @@ class RoundsScreen extends StatelessWidget {
               ),
             ],
           ));
-    }
-    else if (round.state == RoundState.ENDING) {
+    } else if (round.state == RoundState.ENDING) {
       round.votes.forEach((key, value) {
         print(key + " Voted for:");
         value.forEach((element) {
@@ -166,8 +157,7 @@ class RoundsScreen extends StatelessWidget {
         print(" ");
       });
       return Container();
-    }
-    else{
+    } else {
       return Container();
     }
   }

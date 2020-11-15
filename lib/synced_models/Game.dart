@@ -55,7 +55,6 @@ class Game extends ChangeNotifier {
   }
 
   bool start() {
-    if (allReady) {
       int roundIndex = Random().nextInt(rounds.length);
       String round_ = rounds[roundIndex];
       rounds.removeAt(roundIndex);
@@ -68,8 +67,6 @@ class Game extends ChangeNotifier {
           .setData({"state": RoundState.THINKING.toString()});
       notifyListeners();
       return true;
-    }
-    return false;
   }
 
   Future<void> loadNameFromDisk() async {
