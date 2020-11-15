@@ -175,19 +175,33 @@ class RoundsScreen extends StatelessWidget {
       round.iVoted = false;
       round.iResponded = false;
       round.iStartedNew = false;
-      return Scaffold(
-          appBar: AppBar(title: Text("Flutter Card Carousel")),
-          body: Column(
-            children: <Widget>[
-              ListView.builder(
-                itemCount: winner.length,
-                itemBuilder: (context, i) {
-                 return Text(winner[i]);
-                },
-              )
-            ],
-          )
-      );
+      print("Winners:");
+      print(winner);
+      if(winner.length>0) {
+        return Scaffold(
+            appBar: AppBar(title: Text("Round-wise Winners")),
+            body: Column(
+              children: <Widget>[
+                Expanded(
+                    child: SizedBox(
+                        height: 200.0,
+                        child:
+                        ListView.builder(
+                          itemCount: winner.length,
+                          itemBuilder: (context, i) {
+                            return Container(
+                                child: Text(winner[i])
+                            );
+                          },
+                        )
+                    ))
+              ],
+            )
+        );
+      }else{
+        return Container();
+      }
+
     } else {
       return Container();
     }
