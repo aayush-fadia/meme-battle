@@ -146,7 +146,7 @@ class RoundSync extends ChangeNotifier {
         if (event.documents.length == numPlayers) {
           db
               .document("games/$gameCode/rounds/")
-              .updateData({"state": RoundState.VOTING});
+              .updateData({"state": RoundState.VOTING.toString()});
         }
       });
     }

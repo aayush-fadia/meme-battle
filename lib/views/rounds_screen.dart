@@ -82,12 +82,7 @@ class RoundsScreen extends StatelessWidget {
       List cardList=[];
       round.responses.forEach((element) {cardList.add(Item1(element.imageUrl));});
       var _currentIndex = 1;
-      return MaterialApp(
-        title: 'Flutter Card Carousel App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: Scaffold(
+      return  Scaffold(
             appBar: AppBar(
                 title:Text("Flutter Card Carousel")
             ),
@@ -158,10 +153,10 @@ class RoundsScreen extends StatelessWidget {
                 ),
               ],
             )
-        ),
-      );
-    }
+        );
 
+    }
+    else return Container();
     }
 
   _save(String img) async {
