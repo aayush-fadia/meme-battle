@@ -32,25 +32,47 @@ class Lobby extends StatelessWidget {
                   ),
                   new Padding(padding: EdgeInsets.only(top: 50.0)),
                   Card(
-                      child: ListTile(
-                          leading: Icon(Icons.upload_file),
-                          title: Text('Upload Your Own Template'),
-                          tileColor: Color(0xff5b86e5),
+                    elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0),
+                      ),
+                      color: Color(0xff5b86e5),
+                          child: ListTile(
+                          leading: Icon(Icons.upload_file,
+                          color: Colors.white,),
+                          title: Text('Upload Your Own Template',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),),
                           onTap: () {game.makeRoundCustom(context);},
                           )),
                   Card(
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0),
+                      ),
+                      color: (game.myState==PlayerState.READY)?Colors.lightGreen:Color(0xff5b86e5),
                       child: ListTile(
-                          title: Text('READY', textAlign: TextAlign.center),
+                          title: Text('READY', textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),),
                           leading: (game.myState==PlayerState.READY)?Icon(Icons.done):null,
                           trailing: (game.myState==PlayerState.READY)?Icon(Icons.done):null,
-                          tileColor: (game.myState==PlayerState.READY)?Colors.lightGreen:Color(0xff5b86e5),
                           onTap: (){game.ready();},
                       )),
                   if (game.host) Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    color: game.allReady?Colors.lightGreen:Color(0xff5b86e5),
                     child: ListTile(
-                      title: Text('START', textAlign: TextAlign.center),
+                      title: Text('START', textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),),
                       enabled: game.allReady,
-                      tileColor: game.allReady?Colors.lightGreen:Color(0xff5b86e5),
                       onTap: (){game.allReady?game.start():null;},
                     ),
                   ) else Container(),

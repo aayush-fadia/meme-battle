@@ -35,12 +35,15 @@ class RoundsScreen extends StatelessWidget {
       }
       return Scaffold(
           body: Column(
-            children: [Text("Waiting for others")],
+            children: [Text("Waiting for others",
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontWeight: FontWeight.bold),)],
           ),
           drawer: Drawer(
             child: Column(children: [
               DrawerHeader(
-                child: Text('Drawer Header'),
+                child: Text('Players Ranking'),
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
@@ -75,7 +78,7 @@ class RoundsScreen extends StatelessWidget {
       });
       var _currentIndex = 0;
       return Scaffold(
-          appBar: AppBar(title: Text("Flutter Card Carousel")),
+          appBar: AppBar(title: Text("Voting")),
           body: Column(
             children: <Widget>[
               CarouselSlider(
@@ -118,6 +121,7 @@ class RoundsScreen extends StatelessWidget {
                         round.vote(urlList[_currentIndex], game.myName);
                       },
               ),
+              new Padding(padding: EdgeInsets.only(top: 50.0)),
               NiceButton(
                 // width: 515,
                 elevation: 8.0,
@@ -190,8 +194,17 @@ class RoundsScreen extends StatelessWidget {
                           itemCount: winner.length,
                           itemBuilder: (context, i) {
                             return Container(
-                                child: Text(winner[i])
-                            );
+                                child: Column(
+                                  children :  <Widget>[
+                                    Text(winner[i],
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontWeight: FontWeight.bold),),
+                                    Divider(
+                                      indent: 16,
+                                      endIndent: 16,
+                                    ),
+                                ]));
                           },
                         )
                     ))
