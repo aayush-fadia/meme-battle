@@ -66,12 +66,16 @@ class RoundsScreen extends StatelessWidget {
           ));
     } else if (round.state == RoundState.VOTING) {
       List cardList = [];
+      List urlList = [];
       round.responses.forEach((element) {
         print(element.imageUrl);
         print(element.player);
       });
       round.responses.forEach((element) {
-        cardList.add(Item1(element.imageUrl));
+        if(element.player != game.myName){
+          cardList.add(Item1(element.imageUrl));
+          urlList.add(element.player);
+        }
       });
       var _currentIndex = 0;
       return Scaffold(
@@ -83,10 +87,11 @@ class RoundsScreen extends StatelessWidget {
                   height: 500.0,
                   enableInfiniteScroll: false,
                   aspectRatio: 2.0,
+                  initialPage: 0,
                   onPageChanged: (index, reason) {
                     _currentIndex = index;
                     print("change in page");
-                    print(index);
+                    print(reason);
                     print(_currentIndex);
                   },
                 ),
@@ -115,7 +120,7 @@ class RoundsScreen extends StatelessWidget {
                     : () {
                         print(_currentIndex);
                         round.vote(
-                            round.responses[_currentIndex].player, game.myName);
+                            urlList[_currentIndex], game.myName);
                       },
               ),
               NiceButton(
