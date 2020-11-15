@@ -81,6 +81,10 @@ class RoundsScreen extends StatelessWidget {
     else if (round.state == RoundState.VOTING) {
       List cardList=[];
       round.responses.forEach((element) {cardList.add(Item1(element.imageUrl));});
+
+      print("printing item list");
+      print(round.responses);
+      print(cardList);
       var _currentIndex = 1;
       return  Scaffold(
             appBar: AppBar(

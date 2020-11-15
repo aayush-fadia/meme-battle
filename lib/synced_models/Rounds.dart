@@ -40,6 +40,7 @@ class RoundSync extends ChangeNotifier {
 
   RoundSync(String gameCode, bool host_, int numPlayers_) {
     numPlayers = numPlayers_;
+    this.gameCode = gameCode;
     db.document("games/$gameCode").snapshots().listen((event) {
       round = event.data["round"];
       db.document("games/$gameCode/rounds/$round").snapshots().listen((event) {
@@ -144,8 +145,10 @@ class RoundSync extends ChangeNotifier {
           .snapshots()
           .listen((event) {
         if (event.documents.length == numPlayers) {
+          print("printing game code");
+          print(gameCode);
           db
-              .document("games/$gameCode/rounds/")
+              .document("games/$gameCode/rounds/$round")
               .updateData({"state": RoundState.VOTING.toString()});
         }
       });
