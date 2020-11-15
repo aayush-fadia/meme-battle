@@ -3,28 +3,24 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_editor_pro/modules/all_emojies.dart';
 import 'package:image_editor_pro/modules/bottombar_container.dart';
 import 'package:image_editor_pro/modules/colors_picker.dart';
 import 'package:image_editor_pro/modules/emoji.dart';
 import 'package:image_editor_pro/modules/text.dart';
 import 'package:image_editor_pro/modules/textview.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:signature/signature.dart';
-import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-
-import 'package:meme_battle/synced_models/PlayerList.dart';
-import 'package:provider/provider.dart';
 
 TextEditingController heightcontroler = TextEditingController();
 TextEditingController widthcontroler = TextEditingController();
-var width = 300;
-var height = 300;
+var width = 420;
+var height = 420;
 
 List fontsize = [];
 var howmuchwidgetis = 0;
@@ -32,12 +28,13 @@ List multiwidget = [];
 Color currentcolors = Colors.white;
 var opicity = 0.0;
 SignatureController _controller =
-SignatureController(penStrokeWidth: 5, penColor: Colors.green);
+    SignatureController(penStrokeWidth: 5, penColor: Colors.green);
 
 class ImageEditorPro extends StatefulWidget {
   final Color appBarColor;
   final Color bottomBarColor;
   final File image;
+
   ImageEditorPro({this.appBarColor, this.bottomBarColor, this.image});
 
   @override
@@ -74,6 +71,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
   File _image = null;
   ScreenshotController screenshotController = ScreenshotController();
   Timer timeprediction;
+
   void timers() {
     Timer.periodic(Duration(milliseconds: 10), (tim) {
       setState(() {});
@@ -119,7 +117,7 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                   _imageFile = null;
                   screenshotController
                       .capture(
-                      delay: Duration(milliseconds: 500), pixelRatio: 1.5)
+                          delay: Duration(milliseconds: 500), pixelRatio: 1.5)
                       .then((File image) async {
                     //print("Capture Done");
                     setState(() {
@@ -151,11 +149,11 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                     children: <Widget>[
                       _image != null
                           ? Image.file(
-                        _image,
-                        height: height.toDouble(),
-                        width: width.toDouble(),
-                        fit: BoxFit.cover,
-                      )
+                              _image,
+                              height: height.toDouble(),
+                              width: width.toDouble(),
+                              fit: BoxFit.cover,
+                            )
                           : Container(),
                       Container(
                         child: GestureDetector(
@@ -177,56 +175,56 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                         children: multiwidget.asMap().entries.map((f) {
                           return type[f.key] == 1
                               ? EmojiView(
-                            left: offsets[f.key].dx,
-                            top: offsets[f.key].dy,
-                            ontap: () {
-                              scaf.currentState
-                                  .showBottomSheet((context) {
-                                return Sliders(
-                                  size: f.key,
-                                  sizevalue: fontsize[f.key].toDouble(),
-                                );
-                              });
-                            },
-                            onpanupdate: (details) {
-                              setState(() {
-                                offsets[f.key] = Offset(
-                                    offsets[f.key].dx + details.delta.dx,
-                                    offsets[f.key].dy + details.delta.dy);
-                              });
-                            },
-                            value: f.value.toString(),
-                            fontsize: fontsize[f.key].toDouble(),
-                            align: TextAlign.center,
-                          )
+                                  left: offsets[f.key].dx,
+                                  top: offsets[f.key].dy,
+                                  ontap: () {
+                                    scaf.currentState
+                                        .showBottomSheet((context) {
+                                      return Sliders(
+                                        size: f.key,
+                                        sizevalue: fontsize[f.key].toDouble(),
+                                      );
+                                    });
+                                  },
+                                  onpanupdate: (details) {
+                                    setState(() {
+                                      offsets[f.key] = Offset(
+                                          offsets[f.key].dx + details.delta.dx,
+                                          offsets[f.key].dy + details.delta.dy);
+                                    });
+                                  },
+                                  value: f.value.toString(),
+                                  fontsize: fontsize[f.key].toDouble(),
+                                  align: TextAlign.center,
+                                )
                               : type[f.key] == 2
-                              ? TextView(
-                            left: offsets[f.key].dx,
-                            top: offsets[f.key].dy,
-                            ontap: () {
-                              scaf.currentState
-                                  .showBottomSheet((context) {
-                                return Sliders(
-                                  size: f.key,
-                                  sizevalue:
-                                  fontsize[f.key].toDouble(),
-                                );
-                              });
-                            },
-                            onpanupdate: (details) {
-                              setState(() {
-                                offsets[f.key] = Offset(
-                                    offsets[f.key].dx +
-                                        details.delta.dx,
-                                    offsets[f.key].dy +
-                                        details.delta.dy);
-                              });
-                            },
-                            value: f.value.toString(),
-                            fontsize: fontsize[f.key].toDouble(),
-                            align: TextAlign.center,
-                          )
-                              : new Container();
+                                  ? TextView(
+                                      left: offsets[f.key].dx,
+                                      top: offsets[f.key].dy,
+                                      ontap: () {
+                                        scaf.currentState
+                                            .showBottomSheet((context) {
+                                          return Sliders(
+                                            size: f.key,
+                                            sizevalue:
+                                                fontsize[f.key].toDouble(),
+                                          );
+                                        });
+                                      },
+                                      onpanupdate: (details) {
+                                        setState(() {
+                                          offsets[f.key] = Offset(
+                                              offsets[f.key].dx +
+                                                  details.delta.dx,
+                                              offsets[f.key].dy +
+                                                  details.delta.dy);
+                                        });
+                                      },
+                                      value: f.value.toString(),
+                                      fontsize: fontsize[f.key].toDouble(),
+                                      align: TextAlign.center,
+                                    )
+                                  : new Container();
                         }).toList(),
                       )
                     ],
@@ -237,129 +235,129 @@ class _ImageEditorProState extends State<ImageEditorPro> {
         bottomNavigationBar: openbottomsheet
             ? new Container()
             : Container(
-          decoration: BoxDecoration(
-              color: widget.bottomBarColor,
-              boxShadow: [BoxShadow(blurRadius: 10.9)]),
-          height: 70,
-          child: new ListView(
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              BottomBarContainer(
-                colors: widget.bottomBarColor,
-                icons: FontAwesomeIcons.brush,
-                ontap: () {
-                  // raise the [showDialog] widget
-                  showDialog(
-                      context: context,
-                      child: AlertDialog(
-                        title: const Text('Pick a color!'),
-                        content: SingleChildScrollView(
-                          child: ColorPicker(
-                            pickerColor: pickerColor,
-                            onColorChanged: changeColor,
-                            showLabel: true,
-                            pickerAreaHeightPercent: 0.8,
-                          ),
-                        ),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: const Text('Got it'),
-                            onPressed: () {
-                              setState(() => currentColor = pickerColor);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      ));
-                },
-                title: 'Brush',
-              ),
-              BottomBarContainer(
-                icons: Icons.text_fields,
-                ontap: () async {
-                  final value = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TextEditor()));
-                  if (value.toString().isEmpty) {
-                    print("true");
-                  } else {
-                    type.add(2);
-                    fontsize.add(20);
-                    offsets.add(Offset.zero);
-                    multiwidget.add(value);
-                    howmuchwidgetis++;
-                  }
-                },
-                title: 'Text',
-              ),
-              CountdownTimer(
-
-                endTime: endTime,
-                widgetBuilder: (_, CurrentRemainingTime time) {
-                  int time_rem = 60*time.min + time.sec;
-                  return BottomBarContainer(
-                    title: "${time_rem}",
-                    icons: Icons.timer,
-                  );
-                },
-                onEnd: () {
-                  File _imageFile;
-                  _imageFile = null;
-                  screenshotController
-                      .capture(
-                      delay: Duration(milliseconds: 500), pixelRatio: 1.5)
-                      .then((File image) async {
-                    //print("Capture Done");
-                    setState(() {
-                      _imageFile = image;
-                    });
-                    final paths = await getExternalStorageDirectory();
-                    image.copy(paths.path +
-                        '/' +
-                        DateTime.now().millisecondsSinceEpoch.toString() +
-                        '.png');
-                    Navigator.pop(context, image);
-                  }).catchError((onError) {
-                    print(onError);
-                  });
-                },
-              ),
-              BottomBarContainer(
-                icons: FontAwesomeIcons.eraser,
-                ontap: () {
-                  _controller.clear();
-                  type.clear();
-                  fontsize.clear();
-                  offsets.clear();
-                  multiwidget.clear();
-                  howmuchwidgetis = 0;
-                },
-                title: 'Eraser',
-              ),
-              BottomBarContainer(
-                icons: FontAwesomeIcons.smile,
-                ontap: () {
-                  Future getemojis = showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Emojies();
-                      });
-                  getemojis.then((value) {
-                    if (value != null) {
-                      type.add(1);
-                      fontsize.add(20);
-                      offsets.add(Offset.zero);
-                      multiwidget.add(value);
-                      howmuchwidgetis++;
-                    }
-                  });
-                },
-                title: 'Emoji',
-              ),
-            ],
-          ),
-        ));
+                decoration: BoxDecoration(
+                    color: widget.bottomBarColor,
+                    boxShadow: [BoxShadow(blurRadius: 10.9)]),
+                height: 70,
+                child: new ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: <Widget>[
+                    BottomBarContainer(
+                      colors: widget.bottomBarColor,
+                      icons: FontAwesomeIcons.brush,
+                      ontap: () {
+                        // raise the [showDialog] widget
+                        showDialog(
+                            context: context,
+                            child: AlertDialog(
+                              title: const Text('Pick a color!'),
+                              content: SingleChildScrollView(
+                                child: ColorPicker(
+                                  pickerColor: pickerColor,
+                                  onColorChanged: changeColor,
+                                  showLabel: true,
+                                  pickerAreaHeightPercent: 0.8,
+                                ),
+                              ),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: const Text('Got it'),
+                                  onPressed: () {
+                                    setState(() => currentColor = pickerColor);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ));
+                      },
+                      title: 'Brush',
+                    ),
+                    BottomBarContainer(
+                      icons: Icons.text_fields,
+                      ontap: () async {
+                        final value = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TextEditor()));
+                        if (value.toString().isEmpty) {
+                          print("true");
+                        } else {
+                          type.add(2);
+                          fontsize.add(20);
+                          offsets.add(Offset.zero);
+                          multiwidget.add(value);
+                          howmuchwidgetis++;
+                        }
+                      },
+                      title: 'Text',
+                    ),
+                    CountdownTimer(
+                      endTime: endTime,
+                      widgetBuilder: (_, CurrentRemainingTime time) {
+                        int time_rem = 60 * time.min + time.sec;
+                        return BottomBarContainer(
+                          title: "${time_rem}",
+                          icons: Icons.timer,
+                        );
+                      },
+                      onEnd: () {
+                        File _imageFile;
+                        _imageFile = null;
+                        screenshotController
+                            .capture(
+                                delay: Duration(milliseconds: 500),
+                                pixelRatio: 1.5)
+                            .then((File image) async {
+                          //print("Capture Done");
+                          setState(() {
+                            _imageFile = image;
+                          });
+                          final paths = await getExternalStorageDirectory();
+                          image.copy(paths.path +
+                              '/' +
+                              DateTime.now().millisecondsSinceEpoch.toString() +
+                              '.png');
+                          Navigator.pop(context, image);
+                        }).catchError((onError) {
+                          print(onError);
+                        });
+                      },
+                    ),
+                    BottomBarContainer(
+                      icons: FontAwesomeIcons.eraser,
+                      ontap: () {
+                        _controller.clear();
+                        type.clear();
+                        fontsize.clear();
+                        offsets.clear();
+                        multiwidget.clear();
+                        howmuchwidgetis = 0;
+                      },
+                      title: 'Eraser',
+                    ),
+                    BottomBarContainer(
+                      icons: FontAwesomeIcons.smile,
+                      ontap: () {
+                        Future getemojis = showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Emojies();
+                            });
+                        getemojis.then((value) {
+                          if (value != null) {
+                            type.add(1);
+                            fontsize.add(20);
+                            offsets.add(Offset.zero);
+                            multiwidget.add(value);
+                            howmuchwidgetis++;
+                          }
+                        });
+                      },
+                      title: 'Emoji',
+                    ),
+                  ],
+                ),
+              ));
   }
 
   void bottomsheets() {
@@ -400,8 +398,8 @@ class _ImageEditorProState extends State<ImageEditorPro> {
                                     var image = await ImagePicker.pickImage(
                                         source: ImageSource.gallery);
                                     var decodedImage =
-                                    await decodeImageFromList(
-                                        image.readAsBytesSync());
+                                        await decodeImageFromList(
+                                            image.readAsBytesSync());
 
                                     setState(() {
                                       height = decodedImage.height;
@@ -478,23 +476,25 @@ class _SignatState extends State<Signat> {
   @override
   Widget build(BuildContext context) {
     return //SIGNATURE CANVAS
-      //SIGNATURE CANVAS
-      ListView(
-        children: <Widget>[
-          Signature(
-              controller: _controller,
-              height: height.toDouble(),
-              width: width.toDouble(),
-              backgroundColor: Colors.transparent),
-        ],
-      );
+        //SIGNATURE CANVAS
+        ListView(
+      children: <Widget>[
+        Signature(
+            controller: _controller,
+            height: height.toDouble(),
+            width: width.toDouble(),
+            backgroundColor: Colors.transparent),
+      ],
+    );
   }
 }
 
 class Sliders extends StatefulWidget {
   final int size;
   final sizevalue;
+
   const Sliders({Key key, this.size, this.sizevalue}) : super(key: key);
+
   @override
   _SlidersState createState() => _SlidersState();
 }
