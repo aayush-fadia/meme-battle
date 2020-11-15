@@ -215,8 +215,8 @@ class RoundsScreen extends StatelessWidget {
         print(" ");
       });
       round.votes.forEach((key, value){
-        if(value.length==max_votes)
-          winner.add(key);
+
+          winner.add(key + ", Point: " + (value.length*5).toString());
       });
       round.iVoted = false;
       round.iResponded = false;
@@ -250,7 +250,7 @@ class RoundsScreen extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
 
                                         style: GoogleFonts.lato(
-                                          textStyle: TextStyle(fontSize: 20.0 ,color: Colors.blue, letterSpacing: .5),
+                                          textStyle: TextStyle(fontSize: 10.0 ,color: Colors.blue, letterSpacing: .5),
                                         ),),
                                     Divider(
                                       indent: 16,
