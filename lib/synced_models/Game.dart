@@ -28,6 +28,7 @@ class Game extends ChangeNotifier {
   bool allReady = false;
   String currentRound = "-1";
   List<String> rounds;
+  int numPlayers;
   final db = Firestore.instance;
   final cloud = FirebaseStorage.instance;
 
@@ -122,16 +123,23 @@ class Game extends ChangeNotifier {
       print("Listening to Plauyers!");
       db.collection("games/$code/players").snapshots().listen((event) {
         bool _allReady = true;
+        int numPlayers_ = 0;
         event.documents.forEach((element) {
           print("CHECK READY!!!!!!");
           print(_allReady);
-          print(Player.fromSnapshot(element).state == PlayerState.READY);
+          print(Player
+              .fromSnapshot(element)
+              .state == PlayerState.READY);
           print(" ");
+          numPlayers_++;
           _allReady = _allReady &&
-              Player.fromSnapshot(element).state == PlayerState.READY;
+              Player
+                  .fromSnapshot(element)
+                  .state == PlayerState.READY;
           if (allReady != _allReady) {
             allReady = _allReady;
             print("ALL READY CHANGED!");
+            numPlayers = numPlayers_;
             notifyListeners();
           }
         });

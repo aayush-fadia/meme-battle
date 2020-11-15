@@ -36,7 +36,8 @@ class RoundSync extends ChangeNotifier {
   List<Response> responses;
   bool iVoted = false;
 
-  RoundSync(String gameCode, bool host_) {
+  RoundSync(String gameCode, bool host_, int numPlayers_) {
+    numPlayers = numPlayers_;
     db.document("games/$gameCode").snapshots().listen((event) {
       round = event.data["round"];
       db.document("games/$gameCode/rounds/$round").snapshots().listen((event) {
@@ -154,6 +155,7 @@ class RoundSync extends ChangeNotifier {
         .document("games/$gameCode/rounds/$round/votes/$forPlayer/$myName")
         .setData({"vote": "1"});
     iVoted = true;
+    if (host) {}
     notifyListeners();
   }
 }

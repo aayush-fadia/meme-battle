@@ -23,7 +23,8 @@ class GameScreen extends StatelessWidget {
       return MultiProvider(providers: [
         ChangeNotifierProvider(create: (context) => PlayerList(game.code)),
         ChangeNotifierProvider(
-            create: (context) => RoundSync(game.code, game.host))
+            create: (context) =>
+                RoundSync(game.code, game.host, game.numPlayers))
       ], child: RoundsScreen());
     }
   }
