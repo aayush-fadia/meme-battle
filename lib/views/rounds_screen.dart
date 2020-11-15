@@ -28,28 +28,46 @@ class RoundsScreen extends StatelessWidget {
     Game game = Provider.of<Game>(context);
     RoundSync round = Provider.of<RoundSync>(context);
     PlayerList playersList = Provider.of<PlayerList>(context);
+    Color hexToColor(String code) {
+      return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+    }
+
     if (round.state == RoundState.THINKING) {
       print("IRESPONDED: " + round.iResponded.toString());
       if (!round.iResponded) {
         round.respond(context, game.myName, round.imageUrl);
       }
       return Scaffold(
-          body: Column(
-            children: [Text("Waiting for others")],
-          ),
+              appBar: AppBar(title: Text("Lobby", textAlign: TextAlign.center,)),
+              body: Container(
+                  padding: const EdgeInsets.all(30.0),
+                  color: Colors.white,
+                  child: Container(
+                      child: Center(
+                          child: Column(children: [
+                            Padding(padding: EdgeInsets.only(top: 140.0)),
+                            Text(
+                              "Waiting for other's memes!",
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                  color: hexToColor("#F2A03D"), fontSize: 25.0),
+                            ),
+                          ])))),
           drawer: Drawer(
-            child: Column(children: [
-              DrawerHeader(
-                child: Text('Drawer Header'),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-              ),
-              ListView(
-                  shrinkWrap: true,
-                  children: playersList.playersList
-                      .map(
-                        (e) => ListTile(
+            child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Text('Leaderboard'),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  ListView(
+                      shrinkWrap: true,
+                      children: playersList.playersList
+                          .map(
+                            (e) => ListTile(
                           leading: Icon(e.state == PlayerState.READY
                               ? Icons.done
                               : Icons.timer),
@@ -57,8 +75,8 @@ class RoundsScreen extends StatelessWidget {
                           trailing: Text(e.score.toString()),
                         ),
                       )
-                      .toList()),
-            ]),
+                          .toList()),
+                ]),
           ));
     } else if (round.state == RoundState.VOTING) {
       List cardList = [];
@@ -75,12 +93,13 @@ class RoundsScreen extends StatelessWidget {
       });
       var _currentIndex = 0;
       return Scaffold(
-          appBar: AppBar(title: Text("Flutter Card Carousel")),
+        backgroundColor: Colors.white,
+          appBar: AppBar(title: Text("Time to VOTE!")),
           body: Column(
             children: <Widget>[
               CarouselSlider(
                 options: CarouselOptions(
-                  height: 500.0,
+                  height: 450.0,
                   enableInfiniteScroll: false,
                   aspectRatio: 2.0,
                   initialPage: 0,
@@ -97,20 +116,21 @@ class RoundsScreen extends StatelessWidget {
                       height: MediaQuery.of(context).size.height * 0.30,
                       width: MediaQuery.of(context).size.width,
                       child: Card(
-                        color: Colors.blueAccent,
+                        color: Colors.white,
                         child: card,
+                        shadowColor: Colors.white,
                       ),
                     );
                   });
                 }).toList(),
               ),
-              new Padding(padding: EdgeInsets.only(top: 50.0)),
+              new Padding(padding: EdgeInsets.only(top: 20.0)),
               NiceButton(
                 // width: 515,
                 elevation: 8.0,
                 radius: 52.0,
-                text: "Vote This",
-                background: Color(0xff5b86e5),
+                text: "Vote!",
+                background: round.iVoted?Colors.lightGreen:Color(0xff5b86e5),
                 onPressed: round.iVoted
                     ? null
                     : () {
@@ -118,11 +138,12 @@ class RoundsScreen extends StatelessWidget {
                         round.vote(urlList[_currentIndex], game.myName);
                       },
               ),
+              new Padding(padding: EdgeInsets.only(top: 20.0)),
               NiceButton(
                 // width: 515,
                 elevation: 8.0,
                 radius: 52.0,
-                text: "Save This",
+                text: "Save Meme",
                 background: Color(0xff5b86e5),
                 onPressed: () {
                   String img = round.imageUrl;
@@ -147,7 +168,33 @@ class RoundsScreen extends StatelessWidget {
                 }),
               ),
             ],
-          ));
+          ),
+          drawer: Drawer(
+            child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    child: Text('Leaderboard'),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  ListView(
+                      shrinkWrap: true,
+                      children: playersList.playersList
+                          .map(
+                            (e) => ListTile(
+                          leading: Icon(e.state == PlayerState.READY
+                              ? Icons.done
+                              : Icons.timer),
+                          title: Text(e.name),
+                          trailing: Text(e.score.toString()),
+                        ),
+                      )
+                          .toList()),
+                ]),
+          )
+      );
     } else if (round.state == RoundState.ENDING) {
       if (!round.iStartedNew) {
         round.iStartedNew = true;
