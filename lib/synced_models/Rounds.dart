@@ -38,6 +38,7 @@ class RoundSync extends ChangeNotifier {
   Map<String, List<String>> votes;
   String roundWinner;
   bool iResponded = false;
+
   RoundSync(String gameCode, bool host_, int numPlayers_) {
     numPlayers = numPlayers_;
     this.gameCode = gameCode;
@@ -139,7 +140,7 @@ class RoundSync extends ChangeNotifier {
         .document("games/$gameCode/rounds/$round/responses/$myName")
         .setData({"uploaded": "1"});
     if (host) {
-      print("NUMPLAYERS: "+numPlayers.toString());
+      print("NUMPLAYERS: " + numPlayers.toString());
       db
           .collection("games/$gameCode/rounds/$round/responses")
           .snapshots()
@@ -158,7 +159,7 @@ class RoundSync extends ChangeNotifier {
   void vote(String forPlayer, String myName) {
     db
         .document("games/$gameCode/rounds/$round/votes/$forPlayer")
-        .setData({myName: "1"});
+        .updateData({myName: "1"});
     iVoted = true;
     if (host) {
       db
