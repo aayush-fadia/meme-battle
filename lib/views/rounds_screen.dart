@@ -193,7 +193,7 @@ class RoundsScreen extends StatelessWidget {
     } else if (round.state == RoundState.ENDING) {
       if (!round.iStartedNew) {
         round.iStartedNew = true;
-        Future.delayed(Duration(milliseconds: 5000), () {
+        Future.delayed(Duration(milliseconds: 10000), () {
           if (game.host) {
             game.start();
           }
