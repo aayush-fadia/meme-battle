@@ -61,27 +61,54 @@ class Game extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toLobby() {
+    db
+        .document("games/$code")
+        .updateData({"state": GameState.LOBBY.toString()});
+  }
+
   bool start() {
-    if(newRounds == null){
+    if (newRounds == null) {
       newRounds = new List();
       newRounds.addAll(rounds);
-    }
-    print(newRounds.length);
-    if (newRounds.length > 0) {
-      int roundIndex = Random().nextInt(newRounds.length);
-      String round_ = newRounds[roundIndex];
-      newRounds.removeAt(roundIndex);
-      state = GameState.PLAYING;
-      db
-          .document("games/$code")
-          .updateData({"state": state.toString(), "round": round_});
-      db
-          .document("games/$code/rounds/$round_")
-          .updateData({"state": RoundState.THINKING.toString()});
-      print("LENGTH OF ROUNDS: "+newRounds.length.toString());
+      print(newRounds.length);
+      if (newRounds.length > 0) {
+        int roundIndex = Random().nextInt(newRounds.length);
+        String round_ = newRounds[roundIndex];
+        newRounds.removeAt(roundIndex);
+        state = GameState.PLAYING;
+        db
+            .document("games/$code")
+            .updateData({"state": state.toString(), "round": round_});
+        db
+            .document("games/$code/rounds/$round_")
+            .updateData({"state": RoundState.THINKING.toString()});
+        print("LENGTH OF ROUNDS: " + newRounds.length.toString());
+      } else {
+        state = GameState.ENDED;
+        db.document("games/$code").updateData({"state": state.toString()});
+      }
     } else {
-      state = GameState.ENDED;
-      db.document("games/$code").updateData({"state": state.toString()});
+      // toLobby();
+      Future.delayed(Duration(milliseconds: 5000), () {
+        if (newRounds.length > 0) {
+          int roundIndex = Random().nextInt(newRounds.length);
+          String round_ = newRounds[roundIndex];
+          newRounds.removeAt(roundIndex);
+          state = GameState.PLAYING;
+          db
+              .document("games/$code")
+              .updateData({"state": state.toString(), "round": round_});
+          db
+              .document("games/$code/rounds/$round_")
+              .updateData({"state": RoundState.THINKING.toString()});
+          print("LENGTH OF ROUNDS: " + newRounds.length.toString());
+        } else {
+          state = GameState.ENDED;
+          db.document("games/$code").updateData({"state": state.toString()});
+          notifyListeners();
+        }
+      });
     }
   }
 

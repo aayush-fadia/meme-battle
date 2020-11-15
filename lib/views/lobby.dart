@@ -35,7 +35,7 @@ class Lobby extends StatelessWidget {
                       child: ListTile(
                           leading: Icon(Icons.upload_file),
                           title: Text('Upload Your Own Template'),
-                          tileColor: Colors.amberAccent,
+                          tileColor: Color(0xff5b86e5),
                           onTap: () {game.makeRoundCustom(context);},
                           )),
                   Card(
@@ -43,14 +43,14 @@ class Lobby extends StatelessWidget {
                           title: Text('READY', textAlign: TextAlign.center),
                           leading: (game.myState==PlayerState.READY)?Icon(Icons.done):null,
                           trailing: (game.myState==PlayerState.READY)?Icon(Icons.done):null,
-                          tileColor: (game.myState==PlayerState.READY)?Colors.lightGreen:Colors.amberAccent,
+                          tileColor: (game.myState==PlayerState.READY)?Colors.lightGreen:Color(0xff5b86e5),
                           onTap: (){game.ready();},
                       )),
                   if (game.host) Card(
                     child: ListTile(
                       title: Text('START', textAlign: TextAlign.center),
                       enabled: game.allReady,
-                      tileColor: game.allReady?Colors.lightGreen:Colors.amberAccent,
+                      tileColor: game.allReady?Colors.lightGreen:Color(0xff5b86e5),
                       onTap: (){game.allReady?game.start():null;},
                     ),
                   ) else Container(),
@@ -61,7 +61,7 @@ class Lobby extends StatelessWidget {
               padding: EdgeInsets.zero,
                 children: <Widget>[
               DrawerHeader(
-                child: Text('Drawer Header'),
+                child: Text('Leaderboard'),
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
