@@ -21,7 +21,7 @@ class Response {
   String imageUrl;
   String player;
 
-  Response(this.imageUrl, this.player);
+  Response(this.player, this.imageUrl);
 }
 
 class RoundSync extends ChangeNotifier {
@@ -40,6 +40,7 @@ class RoundSync extends ChangeNotifier {
 
   RoundSync(String gameCode, bool host_, int numPlayers_) {
     numPlayers = numPlayers_;
+    this.gameCode = gameCode;
     db.document("games/$gameCode").snapshots().listen((event) {
       round = event.data["round"];
       db.document("games/$gameCode/rounds/$round").snapshots().listen((event) {
@@ -65,8 +66,9 @@ class RoundSync extends ChangeNotifier {
                   .child("games/$gameCode/$round/${element.documentID}.png")
                   .getDownloadURL();
               responses.add(Response(element.documentID, imageUrl));
+              print("Added Response!");
+              notifyListeners();
             });
-            notifyListeners();
           });
         } else if (state == RoundState.ENDING) {
           db
@@ -102,9 +104,6 @@ class RoundSync extends ChangeNotifier {
 
   void respond(BuildContext context, String myName, String imageURL) async {
     String roundCode = round;
-    db
-        .document("games/$gameCode/rounds/$roundCode")
-        .setData({"uploader": myName});
     File image = await pickImage(context, imageURL);
     BuildContext dialogContext;
     Dialog d = Dialog(
@@ -145,8 +144,8 @@ class RoundSync extends ChangeNotifier {
           .listen((event) {
         if (event.documents.length == numPlayers) {
           db
-              .document("games/$gameCode/rounds/")
-              .updateData({"state": RoundState.VOTING.toString()});
+              .document("games/$gameCode/rounds/$round")
+              .setData({"state": RoundState.VOTING.toString()});
         }
       });
     }
