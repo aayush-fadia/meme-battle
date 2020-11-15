@@ -35,6 +35,8 @@ class RoundSync extends ChangeNotifier {
   int numPlayers;
   List<Response> responses;
   bool iVoted = false;
+  Map<String, List<String>> votes;
+  String roundWinner;
 
   RoundSync(String gameCode, bool host_, int numPlayers_) {
     numPlayers = numPlayers_;
@@ -43,15 +45,6 @@ class RoundSync extends ChangeNotifier {
       db.document("games/$gameCode/rounds/$round").snapshots().listen((event) {
         state = toRoundState(event.data["state"]);
         if (state == RoundState.THINKING) {
-          cloud
-              .ref()
-              .child("games/$gameCode/$round/template.png")
-              .getDownloadURL()
-              .then((value) {
-            imageUrl = value;
-            notifyListeners();
-          });
-        } else if (state == RoundState.VOTING) {
           cloud
               .ref()
               .child("games/$gameCode/$round/template.png")
@@ -72,6 +65,17 @@ class RoundSync extends ChangeNotifier {
                   .child("games/$gameCode/$round/${element.documentID}.png")
                   .getDownloadURL();
               responses.add(Response(element.documentID, imageUrl));
+            });
+            notifyListeners();
+          });
+        } else if (state == RoundState.ENDING) {
+          db
+              .collection("games/$gameCode/rounds/$round/votes/")
+              .getDocuments()
+              .then((event) {
+            votes = Map();
+            event.documents.forEach((element) {
+              votes[element.documentID] = element.data.keys.toList();
             });
             notifyListeners();
           });
@@ -155,7 +159,22 @@ class RoundSync extends ChangeNotifier {
         .document("games/$gameCode/rounds/$round/votes/$forPlayer/$myName")
         .setData({"vote": "1"});
     iVoted = true;
-    if (host) {}
+    if (host) {
+      db
+          .collection("games/$gameCode/rounds/$round/votes/")
+          .snapshots()
+          .listen((event) {
+        int numVotes = 0;
+        event.documents.forEach((element) {
+          numVotes += element.data.keys.length;
+        });
+        if (numVotes == numPlayers) {
+          db
+              .document("games/$gameCode/rounds/$round")
+              .updateData({"state": RoundState.ENDING.toString()});
+        }
+      });
+    }
     notifyListeners();
   }
 }
