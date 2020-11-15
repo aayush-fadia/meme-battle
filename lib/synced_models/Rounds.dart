@@ -159,7 +159,7 @@ class RoundSync extends ChangeNotifier {
   void vote(String forPlayer, String myName) {
     db
         .document("games/$gameCode/rounds/$round/votes/$forPlayer")
-        .updateData({myName: "1"});
+        .setData({myName: "1"}, merge: true);
     iVoted = true;
     if (host) {
       db
