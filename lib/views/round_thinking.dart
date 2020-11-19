@@ -56,41 +56,10 @@ class _RoundThinkingState extends State<RoundThinking> {
 
   Future<String> uploadMeme(BuildContext context, String gameCode,
       String roundCode, File image, String userName) async {
-    final cloud = FirebaseStorage.instance;
-    BuildContext dialogContext;
-    Dialog d = Dialog(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
-            ),
-            Expanded(
-              child: Text("Uploading Image to Server, pls wait."),
-            )
-          ],
-        ),
-      ),
-    );
-    showDialog(
-        context: context,
-        builder: (context) {
-          dialogContext = context;
-          return d;
-        },
-        barrierDismissible: false);
-    await cloud
-        .ref()
-        .child("games/$gameCode/$roundCode/$userName.png")
-        .putFile(image)
-        .onComplete;
-    String url = await cloud
-        .ref()
-        .child("games/$gameCode/$roundCode/$userName.png")
-        .getDownloadURL();
-    Navigator.pop(dialogContext);
+    load_begin(context);
+    String url = await uploadAndGetURL(
+        image, "games/$gameCode/$roundCode/$userName.png");
+    Navigator.pop(context);
     return url;
   }
 
@@ -101,6 +70,22 @@ class _RoundThinkingState extends State<RoundThinking> {
     requestedFile = false;
     templateImage = null;
     super.initState();
+  }
+
+  void editFace(int faceToEdit, List<Player> players) async {
+    FaceProp newFace = await showModalBottomSheet<FaceProp>(
+        isDismissible: false,
+        context: context,
+        builder: (context) {
+          return FaceEdit(faceProps[faceToEdit], players);
+        });
+    if (newFace == null) {
+      faceProps.removeAt(faceToEdit);
+      faceNotifiers.removeAt(faceToEdit);
+    } else {
+      faceProps[faceToEdit] = newFace;
+    }
+    setState(() {});
   }
 
   @override
@@ -121,29 +106,18 @@ class _RoundThinkingState extends State<RoundThinking> {
     }
     requestedFile = true;
     List<Widget> stackChildren = [
-      // CachedNetworkImage(
-      //   imageUrl: round.downloadUrl,
-      //   progressIndicatorBuilder: (context, url, downloadProgress) =>
-      //       CircularProgressIndicator(value: downloadProgress.progress),
-      //   errorWidget: (context, url, error) => Icon(Icons.error),
-      // ),
-      if (templateImage == null) CircularProgressIndicator() else
+      if (templateImage == null)
+        CircularProgressIndicator()
+      else
         Image.file(templateImage)
     ];
     for (var key = 0; key < captions.length; key++) {
       stackChildren.add(MemeText(
         left: captions[key].offset.dx,
         top: captions[key].offset.dy,
-        // ontap: () {
-        //   scaf.currentState
-        //       .showBottomSheet((context) {
-        //     return Sliders(
-        //       size: f.key,
-        //       sizevalue:
-        //       fontsize[f.key].toDouble(),
-        //     );
-        //   });
-        // },
+        ontap: () {
+          //TODO
+        },
         onpanupdate: (details) {
           setState(() {
             captions[key].offset = Offset(
@@ -170,15 +144,15 @@ class _RoundThinkingState extends State<RoundThinking> {
                   child: Stack(
                     children: <Widget>[
                       Container(
-                          width: heightToWidth * MediaQuery
-                              .of(context)
-                              .size
-                              .width,
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .width,
-                          child: CachedNetworkImage(imageUrl: faceProps[i].url))
+                          width:
+                              heightToWidth * MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width,
+                          child: InkWell(
+                              onTap: () {
+                                editFace(i, players);
+                              },
+                              child: CachedNetworkImage(
+                                  imageUrl: faceProps[i].url)))
                     ],
                   ),
                 );
@@ -195,27 +169,22 @@ class _RoundThinkingState extends State<RoundThinking> {
         FloatingActionButton.extended(
             onPressed: () async {
               MemeCaptionProp newCaption =
-              await showModalBottomSheet<MemeCaptionProp>(
-                  context: context,
-                  builder: (context) {
-                    return CaptionEdit(
-                        MemeCaptionProp("Enter Caption", 40));
-                  });
+                  await showModalBottomSheet<MemeCaptionProp>(
+                      context: context,
+                      builder: (context) {
+                        return CaptionEdit(
+                            MemeCaptionProp("Enter Caption", 40));
+                      });
               captions.add(newCaption);
               setState(() {});
             },
             label: Text("Add Caption!")),
         FloatingActionButton.extended(
             onPressed: () async {
-              FaceProp newFace = await showModalBottomSheet<FaceProp>(
-                  context: context,
-                  builder: (context) {
-                    return FaceEdit(
-                        FaceProp(players[0].name, players[0].url), players);
-                  });
-              faceProps.add(newFace);
+              faceProps.add(FaceProp(players[0].name, players[0].url));
               faceNotifiers.add(ValueNotifier(Matrix4.identity()));
-              setState(() {});
+              int faceToEdit = faceProps.length - 1;
+              editFace(faceToEdit, players);
             },
             label: Text("Add Face")),
         FloatingActionButton.extended(
