@@ -8,6 +8,7 @@ import 'package:meme_battle/synced_models_new/game.dart';
 import 'package:meme_battle/synced_models_new/game_user.dart';
 import 'package:meme_battle/synced_models_new/player.dart';
 import 'package:meme_battle/synced_models_new/round.dart';
+import 'package:meme_battle/utils.dart';
 import 'package:meme_battle/views/FaceEdit.dart';
 import 'package:meme_battle/views/caption_editor.dart';
 import 'package:meme_battle/views/meme_text.dart';
@@ -39,6 +40,9 @@ class _RoundThinkingState extends State<RoundThinking> {
   List<MemeCaptionProp> captions = [];
   List<FaceProp> faceProps = [];
   List<ValueNotifier<Matrix4>> faceNotifiers = [];
+  bool requestedFile = false;
+  File templateImage;
+  double heightToWidth = 1;
 
   void addCaption(BuildContext context) async {
     MemeCaptionProp newCaption = await showModalBottomSheet<MemeCaptionProp>(
@@ -93,6 +97,13 @@ class _RoundThinkingState extends State<RoundThinking> {
   void showCaptionBottomSheet(int key) {}
 
   @override
+  void initState() {
+    requestedFile = false;
+    templateImage = null;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print("Building RoundThinking");
     GameUser user = Provider.of<GameUser>(context);
@@ -100,13 +111,24 @@ class _RoundThinkingState extends State<RoundThinking> {
     List<Player> players = Provider.of<List<Player>>(context);
     List<Round> rounds = Provider.of<List<Round>>(context);
     Round round = Provider.of<Round>(context);
+    if (!requestedFile) {
+      downloadImageGetAspectRatioAndFile(round.downloadUrl).then((value) {
+        setState(() {
+          templateImage = value.item1;
+          heightToWidth = value.item2;
+        });
+      });
+    }
+    requestedFile = true;
     List<Widget> stackChildren = [
-      CachedNetworkImage(
-        imageUrl: round.downloadUrl,
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-      ),
+      // CachedNetworkImage(
+      //   imageUrl: round.downloadUrl,
+      //   progressIndicatorBuilder: (context, url, downloadProgress) =>
+      //       CircularProgressIndicator(value: downloadProgress.progress),
+      //   errorWidget: (context, url, error) => Icon(Icons.error),
+      // ),
+      if (templateImage == null) CircularProgressIndicator() else
+        Image.file(templateImage)
     ];
     for (var key = 0; key < captions.length; key++) {
       stackChildren.add(MemeText(
@@ -147,60 +169,66 @@ class _RoundThinkingState extends State<RoundThinking> {
                   transform: faceNotifiers[i].value,
                   child: Stack(
                     children: <Widget>[
-                      CachedNetworkImage(imageUrl: faceProps[i].url)
+                      Container(
+                          width: heightToWidth * MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
+                          child: CachedNetworkImage(imageUrl: faceProps[i].url))
                     ],
                   ),
                 );
               })));
     }
-    return Scaffold(
-      appBar: AppBar(title: Text("Make Your Meme!")),
-      body: Column(
-        children: [
-          Screenshot(
-            child: Stack(
-              children: stackChildren,
-            ),
-            controller: screenshotController,
+    return Column(
+      children: [
+        Screenshot(
+          child: Stack(
+            children: stackChildren,
           ),
-          FloatingActionButton.extended(
-              onPressed: () async {
-                MemeCaptionProp newCaption =
-                    await showModalBottomSheet<MemeCaptionProp>(
-                        context: context,
-                        builder: (context) {
-                          return CaptionEdit(
-                              MemeCaptionProp("Enter Caption", 40));
-                        });
-                captions.add(newCaption);
-                setState(() {});
-              },
-              label: Text("Add Caption!")),
-          FloatingActionButton.extended(
-              onPressed: () async {
-                FaceProp newFace = await showModalBottomSheet<FaceProp>(
-                    context: context,
-                    builder: (context) {
-                      return FaceEdit(
-                          FaceProp(players[0].name, players[0].url), players);
-                    });
-                faceProps.add(newFace);
-                faceNotifiers.add(ValueNotifier(Matrix4.identity()));
-                setState(() {});
-              },
-              label: Text("Add Face")),
-          FloatingActionButton.extended(
-              onPressed: () async {
-                File image = await screenshotController.capture();
-                String url = await uploadMeme(
-                    context, game.code, round.id, image, user.name);
-                round.addMeme(game.code, user.name, url);
-              },
-              label: Text("Submit!")),
-          Text("Round ID:${round.id}"),
-          Text("Image URL:${round.downloadUrl}"),
-        ],
-      ),
+          controller: screenshotController,
+        ),
+        FloatingActionButton.extended(
+            onPressed: () async {
+              MemeCaptionProp newCaption =
+              await showModalBottomSheet<MemeCaptionProp>(
+                  context: context,
+                  builder: (context) {
+                    return CaptionEdit(
+                        MemeCaptionProp("Enter Caption", 40));
+                  });
+              captions.add(newCaption);
+              setState(() {});
+            },
+            label: Text("Add Caption!")),
+        FloatingActionButton.extended(
+            onPressed: () async {
+              FaceProp newFace = await showModalBottomSheet<FaceProp>(
+                  context: context,
+                  builder: (context) {
+                    return FaceEdit(
+                        FaceProp(players[0].name, players[0].url), players);
+                  });
+              faceProps.add(newFace);
+              faceNotifiers.add(ValueNotifier(Matrix4.identity()));
+              setState(() {});
+            },
+            label: Text("Add Face")),
+        FloatingActionButton.extended(
+            onPressed: () async {
+              File image = await screenshotController.capture();
+              String url = await uploadMeme(
+                  context, game.code, round.id, image, user.name);
+              round.addMeme(game.code, user.name, url);
+            },
+            label: Text("Submit!")),
+        Text("Round ID:${round.id}"),
+        Text("Image URL:${round.downloadUrl}"),
+      ],
     );
   }
 }

@@ -3,23 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:meme_battle/synced_models_new/game.dart';
 import 'package:meme_battle/synced_models_new/round.dart';
 import 'package:meme_battle/synced_models_new/stock_round.dart';
+import 'package:meme_battle/views/loading.dart';
 import 'package:meme_battle/views/lobby_new.dart';
 import 'package:meme_battle/views/round.dart';
 import 'package:meme_battle/views/round_wait.dart';
 import 'package:provider/provider.dart';
 
-class GameDecider extends StatelessWidget{
+class GameDecider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Game game = Provider.of<Game>(context);
+    if (game == null) {
+      return LoadingView();
+    }
     if (game.state == GameState.LOBBY) {
       return FutureProvider<List<StockRound>>(
         create: (context) => Firestore.instance
             .collection("stock_memes")
             .getDocuments()
             .then((value) => value.documents
-            .map((e) => StockRound.fromSnapshot(e))
-            .toList()),
+                .map((e) => StockRound.fromSnapshot(e))
+                .toList()),
         child: Lobby(),
       );
     } else if (game.state == GameState.PLAYING) {
@@ -40,5 +44,4 @@ class GameDecider extends StatelessWidget{
       return Text("Loading!!!!");
     }
   }
-
 }

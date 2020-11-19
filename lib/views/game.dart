@@ -19,7 +19,7 @@ class GameParent extends StatelessWidget {
       providers: [
         StreamProvider<Game>(
           create: (context) => Game.streamGame(gameCode),
-          initialData: Game("Loading", "Loading", null, 0),
+          initialData: Game("Loading", "Loading", null, 0, 0, 0),
         ),
         Provider<GameUser>(
           create: (context) => GameUser(userName, host),

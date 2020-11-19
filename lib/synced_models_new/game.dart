@@ -13,6 +13,23 @@ class Game {
   String code;
   String _currentRound;
   int _stockNum;
+  int _memeTimeout;
+
+  int get memeTimeout => _memeTimeout;
+
+  set memeTimeout(int memeTimeout) {
+    _memeTimeout = memeTimeout;
+    gameRoot.setData({"meme_timeout": _memeTimeout}, merge: true);
+  }
+
+  int _voteTimeout;
+
+  int get voteTimeout => _voteTimeout;
+
+  set voteTimeout(int voteTimeout) {
+    _voteTimeout = voteTimeout;
+    gameRoot.setData({"vote_timeout": _voteTimeout}, merge: true);
+  }
 
   int get stockNum => _stockNum;
 
@@ -42,7 +59,8 @@ class Game {
   CollectionReference playersRoot;
   CollectionReference roundsRoot;
 
-  Game(this.code, this._currentRound, this._state, this._stockNum) {
+  Game(this.code, this._currentRound, this._state, this._stockNum,
+      this._voteTimeout, this._memeTimeout) {
     print("Making Game with currentRound=$_currentRound");
     gameRoot = db.document("games/$code");
     playersRoot = gameRoot.collection("players");
@@ -50,14 +68,22 @@ class Game {
   }
 
   factory Game.fromSnapshot(DocumentSnapshot snapShot) {
-    return Game(snapShot.documentID, snapShot.data["current_round"] ?? "null",
-        toGameState(snapShot.data["state"]), snapShot.data["stock_num"] ?? 0);
+    return Game(
+        snapShot.documentID,
+        snapShot.data["current_round"] ?? "null",
+        toGameState(snapShot.data["state"]),
+        snapShot.data["stock_num"] ?? 0,
+        snapShot.data["vote_timeout"],
+        snapShot.data["meme_timeout"]);
   }
 
   static String makeNewGame() {
     String newGameCode = getGameCode();
-    Map<String, String> gameData = {
+    Map<String, dynamic> gameData = {
       "current_round": "null",
+      "vote_timeout": 30,
+      "meme_timeout": 45,
+      "stock_num": 0,
       "state": GameState.LOBBY.toString()
     };
     db.document("games/$newGameCode").setData(gameData);

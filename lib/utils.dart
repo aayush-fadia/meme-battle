@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meme_battle/bottom_sheets/image_picker.dart';
+import 'package:meme_battle/univ.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tuple/tuple.dart';
 
 void load_begin(BuildContext context) {
   showModalBottomSheet(
@@ -85,4 +88,26 @@ Future<File> getCroppedImage(ImageSource imgSrc) async {
 Future<File> getCroppedImageBottomSheet(BuildContext context) async {
   return await showModalBottomSheet(
       context: context, builder: (ctx) => ImagePickerBottomSheet());
+}
+
+Future<String> pickAndUploadImage(
+    BuildContext context, String destination) async {
+  load_begin(context);
+  File image = await getCroppedImage(ImageSource.gallery);
+  String url = await uploadAndGetURL(image, destination);
+  Navigator.pop(context);
+  return url;
+}
+
+Future<Tuple2<File, double>> downloadImageGetAspectRatioAndFile(
+    String url) async {
+  String path = (await getTemporaryDirectory()).path + "/${getGameCode()}.png";
+  File imageFile = File(path);
+  imageFile.create(recursive: true);
+  HttpClientRequest client = await HttpClient().getUrl(Uri.parse(url));
+  HttpClientResponse response = await client.close();
+  await response.pipe(imageFile.openWrite());
+  imageFile = File(path);
+  img.Image image = img.decodeImage(imageFile.readAsBytesSync());
+  return Tuple2(imageFile, (image.height) / (image.width));
 }

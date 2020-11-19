@@ -16,7 +16,8 @@ class GameScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Game ${game.code}"),
       ),
-      body: GameDecider(),
+      body: SingleChildScrollView(
+          physics: ClampingScrollPhysics(), child: GameDecider()),
     );
   }
 }
