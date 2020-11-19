@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meme_battle/synced_models/Game.dart';
-import 'package:meme_battle/views/game_screen.dart';
+import 'package:meme_battle/screens/app_home.dart';
+import 'package:meme_battle/synced_models_new/app_user.dart';
 import 'package:provider/provider.dart';
 
 class MemeBattleApp extends StatelessWidget {
@@ -11,17 +11,21 @@ class MemeBattleApp extends StatelessWidget {
       title: 'MemeBattle',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        accentColor: Colors.greenAccent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainPage(),
+      home: ChangeNotifierProvider<AppUser>(
+        create: (context) => AppUser(),
+        child: AppHomeScreen(),
+      ),
     );
   }
 }
 
-class MainPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => Game(), child: GameScreen());
-  }
-}
+// class MainPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return ChangeNotifierProvider(
+//         create: (context) => Game(), child: GameScreen());
+//   }
+// }

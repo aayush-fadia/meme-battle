@@ -138,7 +138,7 @@ class Game extends ChangeNotifier {
     notifyListeners();
   }
 
-  void inform(){
+  void inform() {
     notifyListeners();
   }
 
