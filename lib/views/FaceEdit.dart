@@ -3,49 +3,85 @@ import 'package:meme_battle/synced_models_new/player.dart';
 import 'package:meme_battle/views/round_thinking.dart';
 
 class FaceEdit extends StatefulWidget {
-  final FaceProp props;
+  final FaceProp faceProp;
   final players;
-  FaceEdit(this.props, this.players);
+
+  FaceEdit(this.faceProp, this.players);
 
   @override
   _FaceEditState createState() => _FaceEditState();
 }
 
 class _FaceEditState extends State<FaceEdit> {
-  Player player;
+  FaceProp faceProp;
 
   @override
   void initState() {
+    faceProp = widget.faceProp;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              DropdownButton(
-                  items: widget.players
-                      .map<DropdownMenuItem<Player>>((e) =>
-                      DropdownMenuItem<Player>(
-                          value: e, child: Text(e.name)))
-                      .toList()
-                      .toList(),
-                  onChanged: (value) {
-                    player = value;
-                  }),
-              RaisedButton(onPressed: () {
-                Navigator.pop(
-                    context, FaceProp(player.name, player.url)
-                );
-              })
-            ],
-          ),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Face of "),
+                    DropdownButton(
+                        value: faceProp.user,
+                        items: List<DropdownMenuItem<String>>.from(widget
+                            .players
+                            .map((val) => DropdownMenuItem<String>(
+                                value: val.name, child: Text(val.name)))
+                            .toList()),
+                        onChanged: (value) {
+                          faceProp = FaceProp(value.name, value.url);
+                        }),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FloatingActionButton.extended(
+                          onPressed: () {
+                            Navigator.pop(context, faceProp);
+                          },
+                          label: Text("Confirm"),
+                          icon: Icon(Icons.done),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FloatingActionButton.extended(
+                          onPressed: () {
+                            Navigator.pop(context, null);
+                          },
+                          label: Text("Delete"),
+                          icon: Icon(Icons.delete_forever),
+                          backgroundColor: Colors.red,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

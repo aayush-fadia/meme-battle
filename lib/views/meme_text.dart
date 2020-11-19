@@ -35,7 +35,7 @@ class MemeText extends StatelessWidget {
     } else {
       return Text(
         text,
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyText2.apply(fontSizeDelta: 24),
       );
     }
   }

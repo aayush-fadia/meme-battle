@@ -176,22 +176,33 @@ class _RoundThinkingState extends State<RoundThinking> {
           ),
           controller: screenshotController,
         ),
-        FloatingActionButton.extended(
-            onPressed: () async {
-              props.add(MemeCaptionProp("Edit Me!", 0));
-              notifiers.add(ValueNotifier(Matrix4.identity()));
-              int faceToEdit = props.length - 1;
-              editComponent(faceToEdit, players);
-            },
-            label: Text("Add Caption!")),
-        FloatingActionButton.extended(
-            onPressed: () async {
-              props.add(FaceProp(players[0].name, players[0].url));
-              notifiers.add(ValueNotifier(Matrix4.identity()));
-              int faceToEdit = props.length - 1;
-              editComponent(faceToEdit, players);
-            },
-            label: Text("Add Face")),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                  onPressed: () async {
+                    props.add(MemeCaptionProp("Edit Me!", 0));
+                    notifiers.add(ValueNotifier(Matrix4.identity()));
+                    int faceToEdit = props.length - 1;
+                    editComponent(faceToEdit, players);
+                  },
+                  child: Icon(Icons.text_fields)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FloatingActionButton(
+                  onPressed: () async {
+                    props.add(FaceProp(players[0].name, players[0].url));
+                    notifiers.add(ValueNotifier(Matrix4.identity()));
+                    int faceToEdit = props.length - 1;
+                    editComponent(faceToEdit, players);
+                  },
+                  child: Icon(Icons.face)),
+            ),
+          ],
+        ),
         FloatingActionButton.extended(
             onPressed: () async {
               File image = await screenshotController.capture();
