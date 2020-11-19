@@ -17,10 +17,9 @@ import 'package:screenshot/screenshot.dart';
 
 class MemeCaptionProp {
   String caption = "Click Me!";
-  double size = 24;
-  Offset offset = Offset.zero;
+  int style = 0;
 
-  MemeCaptionProp(this.caption, this.size);
+  MemeCaptionProp(this.caption, this.style);
 }
 
 class FaceProp {
@@ -37,22 +36,11 @@ class RoundThinking extends StatefulWidget {
 
 class _RoundThinkingState extends State<RoundThinking> {
   ScreenshotController screenshotController = ScreenshotController();
-  List<MemeCaptionProp> captions = [];
-  List<FaceProp> faceProps = [];
-  List<ValueNotifier<Matrix4>> faceNotifiers = [];
+  List<dynamic> props = [];
+  List<ValueNotifier<Matrix4>> notifiers = [];
   bool requestedFile = false;
   File templateImage;
   double heightToWidth = 1;
-
-  void addCaption(BuildContext context) async {
-    MemeCaptionProp newCaption = await showModalBottomSheet<MemeCaptionProp>(
-        context: context,
-        builder: (context) {
-          return CaptionEdit(MemeCaptionProp("Enter Caption", 40));
-        });
-    captions.add(newCaption);
-    setState(() {});
-  }
 
   Future<String> uploadMeme(BuildContext context, String gameCode,
       String roundCode, File image, String userName) async {
@@ -63,8 +51,6 @@ class _RoundThinkingState extends State<RoundThinking> {
     return url;
   }
 
-  void showCaptionBottomSheet(int key) {}
-
   @override
   void initState() {
     requestedFile = false;
@@ -72,19 +58,35 @@ class _RoundThinkingState extends State<RoundThinking> {
     super.initState();
   }
 
-  void editFace(int faceToEdit, List<Player> players) async {
-    FaceProp newFace = await showModalBottomSheet<FaceProp>(
-        isDismissible: false,
-        context: context,
-        builder: (context) {
-          return FaceEdit(faceProps[faceToEdit], players);
-        });
-    if (newFace == null) {
-      faceProps.removeAt(faceToEdit);
-      faceNotifiers.removeAt(faceToEdit);
-    } else {
-      faceProps[faceToEdit] = newFace;
+  void editComponent(int faceToEdit, List<Player> players) async {
+    if (props[faceToEdit] is FaceProp) {
+      FaceProp newFace = await showModalBottomSheet<FaceProp>(
+          isDismissible: false,
+          context: context,
+          builder: (context) {
+            return FaceEdit(props[faceToEdit], players);
+          });
+      if (newFace == null) {
+        props.removeAt(faceToEdit);
+        notifiers.removeAt(faceToEdit);
+      } else {
+        props[faceToEdit] = newFace;
+      }
+    } else if (props[faceToEdit] is MemeCaptionProp) {
+      MemeCaptionProp newFace = await showModalBottomSheet<MemeCaptionProp>(
+          isDismissible: false,
+          context: context,
+          builder: (context) {
+            return CaptionEdit(props[faceToEdit]);
+          });
+      if (newFace == null) {
+        props.removeAt(faceToEdit);
+        props.removeAt(faceToEdit);
+      } else {
+        props[faceToEdit] = newFace;
+      }
     }
+
     setState(() {});
   }
 
@@ -111,52 +113,60 @@ class _RoundThinkingState extends State<RoundThinking> {
       else
         Image.file(templateImage)
     ];
-    for (var key = 0; key < captions.length; key++) {
-      stackChildren.add(MemeText(
-        left: captions[key].offset.dx,
-        top: captions[key].offset.dy,
-        ontap: () {
-          //TODO
-        },
-        onpanupdate: (details) {
-          setState(() {
-            captions[key].offset = Offset(
-                captions[key].offset.dx + details.delta.dx,
-                captions[key].offset.dy + details.delta.dy);
-          });
-        },
-        caption: captions[key].caption,
-        size: captions[key].size,
-        align: TextAlign.center,
-      ));
-    }
-
-    for (int i = 0; i < faceProps.length; i++) {
-      stackChildren.add(MatrixGestureDetector(
-          onMatrixUpdate: (m, tm, sm, rm) {
-            faceNotifiers[i].value = m;
-          },
-          child: AnimatedBuilder(
-              animation: faceNotifiers[i],
-              builder: (ctx, child) {
-                return Transform(
-                  transform: faceNotifiers[i].value,
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                          width:
-                              heightToWidth * MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width,
-                          child: InkWell(
-                              onTap: () {
-                                editFace(i, players);
-                              },
-                              child: CachedNetworkImage(
-                                  imageUrl: faceProps[i].url)))
-                    ],
-                  ),
-                );
-              })));
+    for (int i = 0; i < props.length; i++) {
+      if (props[i] is FaceProp) {
+        stackChildren.add(MatrixGestureDetector(
+            onMatrixUpdate: (m, tm, sm, rm) {
+              notifiers[i].value = m;
+            },
+            child: AnimatedBuilder(
+                animation: notifiers[i],
+                builder: (ctx, child) {
+                  return Transform(
+                    transform: notifiers[i].value,
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                            width: heightToWidth *
+                                MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width,
+                            child: InkWell(
+                                onTap: () {
+                                  editComponent(i, players);
+                                },
+                                child:
+                                    CachedNetworkImage(imageUrl: props[i].url)))
+                      ],
+                    ),
+                  );
+                })));
+      } else if (props[i] is MemeCaptionProp) {
+        stackChildren.add(MatrixGestureDetector(
+            onMatrixUpdate: (m, tm, sm, rm) {
+              notifiers[i].value = m;
+            },
+            child: AnimatedBuilder(
+                animation: notifiers[i],
+                builder: (ctx, child) {
+                  return Transform(
+                    transform: notifiers[i].value,
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                            width: heightToWidth *
+                                MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width,
+                            child: InkWell(
+                                onTap: () {
+                                  editComponent(i, players);
+                                },
+                                child:
+                                    MemeText(props[i].caption, props[i].style)))
+                      ],
+                    ),
+                  );
+                })));
+      }
     }
     return Column(
       children: [
@@ -168,23 +178,18 @@ class _RoundThinkingState extends State<RoundThinking> {
         ),
         FloatingActionButton.extended(
             onPressed: () async {
-              MemeCaptionProp newCaption =
-                  await showModalBottomSheet<MemeCaptionProp>(
-                      context: context,
-                      builder: (context) {
-                        return CaptionEdit(
-                            MemeCaptionProp("Enter Caption", 40));
-                      });
-              captions.add(newCaption);
-              setState(() {});
+              props.add(MemeCaptionProp("Edit Me!", 0));
+              notifiers.add(ValueNotifier(Matrix4.identity()));
+              int faceToEdit = props.length - 1;
+              editComponent(faceToEdit, players);
             },
             label: Text("Add Caption!")),
         FloatingActionButton.extended(
             onPressed: () async {
-              faceProps.add(FaceProp(players[0].name, players[0].url));
-              faceNotifiers.add(ValueNotifier(Matrix4.identity()));
-              int faceToEdit = faceProps.length - 1;
-              editFace(faceToEdit, players);
+              props.add(FaceProp(players[0].name, players[0].url));
+              notifiers.add(ValueNotifier(Matrix4.identity()));
+              int faceToEdit = props.length - 1;
+              editComponent(faceToEdit, players);
             },
             label: Text("Add Face")),
         FloatingActionButton.extended(

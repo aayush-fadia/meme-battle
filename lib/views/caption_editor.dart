@@ -12,19 +12,7 @@ class CaptionEdit extends StatefulWidget {
 
 class _CaptionEditState extends State<CaptionEdit> {
   TextEditingController captionCtrl = TextEditingController();
-  String caption = '';
-  double size = 40.0;
-
-  @override
-  void initState() {
-    size = widget.props.size;
-    captionCtrl.addListener(() {
-      setState(() {
-        caption = captionCtrl.text;
-      });
-    });
-    super.initState();
-  }
+  int style = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,23 +22,21 @@ class _CaptionEditState extends State<CaptionEdit> {
         Expanded(
           child: Column(
             children: [
+              DropdownButton(
+                  items: [0, 1]
+                      .map((val) => DropdownMenuItem(
+                          value: val, child: Text(val.toString())))
+                      .toList(),
+                  onChanged: (newVal) {
+                    style = newVal;
+                  }),
               TextField(
                 controller: captionCtrl,
                 decoration: InputDecoration(hintText: "Caption"),
               ),
-              Slider(
-                value: size,
-                onChanged: (newSize) {
-                  setState(() {
-                    size = newSize;
-                  });
-                },
-                min: 20.0,
-                max: 100.0,
-                label: "Text Size",
-              ),
               RaisedButton(onPressed: () {
-                Navigator.pop(context, MemeCaptionProp(caption, size));
+                Navigator.pop(
+                    context, MemeCaptionProp(captionCtrl.text, style));
               })
             ],
           ),
