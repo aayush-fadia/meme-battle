@@ -58,31 +58,29 @@ class VotingScreen extends StatelessWidget {
     List<Meme> memes = Provider.of<List<Meme>>(context);
     Round round = Provider.of<Round>(context);
     if (!didEveryoneVote(players, memes)) {
-      return Scaffold(
-        body: ListView(
-            scrollDirection: Axis.horizontal,
-            children: List<Widget>.from(memes.map((e) {
-              return Card(
-                child: Column(
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: e.url,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              CircularProgressIndicator(
-                                  value: downloadProgress.progress),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    FloatingActionButton.extended(
-                        onPressed: getOnClick(
-                            game.code, round.id, memes, e, user.name),
-                        label: Text(
-                            getLabel(game.code, round.id, memes, e, user.name)))
-                  ],
-                ),
-              );
-            }))),
-      );
+      return ListView(
+          scrollDirection: Axis.horizontal,
+          children: List<Widget>.from(memes.map((e) {
+            return Card(
+              child: Column(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: e.url,
+                    progressIndicatorBuilder:
+                        (context, url, downloadProgress) =>
+                            CircularProgressIndicator(
+                                value: downloadProgress.progress),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                  FloatingActionButton.extended(
+                      onPressed:
+                          getOnClick(game.code, round.id, memes, e, user.name),
+                      label: Text(
+                          getLabel(game.code, round.id, memes, e, user.name)))
+                ],
+              ),
+            );
+          })));
     } else {
       if (user.host) {
         round.setPlayed(game.code);

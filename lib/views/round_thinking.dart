@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'package:meme_battle/synced_models_new/game.dart';
@@ -17,7 +16,7 @@ import 'package:screenshot/screenshot.dart';
 
 class MemeCaptionProp {
   String caption = "Click Me!";
-  int style = 0;
+  String style = "Memey";
 
   MemeCaptionProp(this.caption, this.style);
 }
@@ -183,7 +182,7 @@ class _RoundThinkingState extends State<RoundThinking> {
               padding: const EdgeInsets.all(8.0),
               child: FloatingActionButton(
                   onPressed: () async {
-                    props.add(MemeCaptionProp("Edit Me!", 0));
+                    props.add(MemeCaptionProp("Edit Me!", "Memey"));
                     notifiers.add(ValueNotifier(Matrix4.identity()));
                     int faceToEdit = props.length - 1;
                     editComponent(faceToEdit, players);

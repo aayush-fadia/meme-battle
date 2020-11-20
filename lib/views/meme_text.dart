@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class MemeText extends StatelessWidget {
   final String text;
-  final int style;
+  final String style;
 
   MemeText(this.text, this.style);
 
   @override
   Widget build(BuildContext context) {
-    if (style == 0) {
+    if (style == "Memey") {
       return Stack(
         children: <Widget>[
           // Stroked text as border.

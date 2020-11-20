@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meme_battle/synced_models_new/player.dart';
 import 'package:meme_battle/views/round_thinking.dart';
 
 class FaceEdit extends StatefulWidget {
